@@ -1,0 +1,3 @@
+ALPACA_ENDPOINT = "https://paper-api.alpaca.markets/v2"
+ALPACA_KEY = "PKF3ZOYB7FAQB7ILRY9T"
+ALPACA_SECRET = "JA6fflMHmj3Lh779oYlx2C5xG22K7eCjt1KkxV1r"
