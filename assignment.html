@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>assignment</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="assignment_files/libs/clipboard/clipboard.min.js"></script>
+<script src="assignment_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="assignment_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="assignment_files/libs/quarto-html/popper.min.js"></script>
+<script src="assignment_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="assignment_files/libs/quarto-html/anchor.min.js"></script>
+<link href="assignment_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="assignment_files/libs/quarto-html/quarto-syntax-highlighting-a37c72dd2dbac68997fcdc15a3622e78.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="assignment_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="assignment_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="assignment_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<p>Class Project Phase 1: Create your own trading system VERY IMPORTANT:</p>
+<p>DO NOT ADD MONEY TO YOUR ALPACA ACCOUNT DO NOT SHARE YOUR API KEYS WITH ANYONE KEEP IT SIMPLE IF YOU DO NOT HAVE TIME</p>
+<p>Step 1: Create an account on Alpaca</p>
+<hr>
+<section id="class-project-phase-1-create-your-own-trading-system" class="level1">
+<h1>Class Project Phase 1: Create your own trading system</h1>
+<p><strong>VERY IMPORTANT:</strong></p>
+<p><strong>DO NOT ADD MONEY TO YOUR ALPACA ACCOUNT</strong><br>
+<strong>DO NOT SHARE YOUR API KEYS WITH ANYONE</strong><br>
+<strong>KEEP IT SIMPLE IF YOU DO NOT HAVE TIME</strong></p>
+<hr>
+<section id="step-1-create-an-account-on-alpaca" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-create-an-account-on-alpaca">Step 1: Create an account on Alpaca</h2>
+<section id="visit-alpacas-website" class="level3">
+<h3 class="anchored" data-anchor-id="visit-alpacas-website">1.1 Visit Alpaca’s Website</h3>
+<p>Open your web browser and go to Alpaca’s official website.</p>
+</section>
+<section id="sign-up-for-an-account" class="level3">
+<h3 class="anchored" data-anchor-id="sign-up-for-an-account">1.2 Sign Up for an Account</h3>
+<p>Look for a “Sign Up” or “Get Started” button on the homepage.<br>
+Click on the button to begin the account creation process.</p>
+</section>
+<section id="fill-in-the-necessary-information" class="level3">
+<h3 class="anchored" data-anchor-id="fill-in-the-necessary-information">1.3 Fill in the Necessary Information</h3>
+<p>You will be prompted to provide essential information to set up your account. This typically includes: - <strong>Full Name:</strong> Enter your full legal name. - <strong>Email Address:</strong> Provide a valid email address that you have access to. - <strong>Password:</strong> Create a secure password for your account.</p>
+</section>
+<section id="agree-to-terms-and-conditions" class="level3">
+<h3 class="anchored" data-anchor-id="agree-to-terms-and-conditions">1.4 Agree to Terms and Conditions</h3>
+<p>Read through Alpaca’s terms and conditions or user agreement.<br>
+Tick the box or take the necessary action to signify your agreement.</p>
+</section>
+<section id="verification" class="level3">
+<h3 class="anchored" data-anchor-id="verification">1.5 Verification</h3>
+<p>Complete any additional verification steps required to confirm your identity. This may involve email verification or other security measures.</p>
+</section>
+<section id="account-confirmation" class="level3">
+<h3 class="anchored" data-anchor-id="account-confirmation">1.6 Account Confirmation</h3>
+<p>After completing the signup process, you may receive a confirmation email. Follow the instructions in the email to verify your account.</p>
+</section>
+<section id="log-in" class="level3">
+<h3 class="anchored" data-anchor-id="log-in">1.7 Log In</h3>
+<p>Return to the Alpaca website and log in to your newly created account using the credentials you provided during the signup process.</p>
+</section>
+<section id="explore-account-dashboard" class="level3">
+<h3 class="anchored" data-anchor-id="explore-account-dashboard">1.8 Explore Account Dashboard</h3>
+<p>Once logged in, familiarize yourself with the account dashboard. This is where you’ll find key information about your account, such as balances and settings.<br>
+<strong>Alert:</strong> You do not need to add funds. You do not need to add money to the account.</p>
+</section>
+<section id="set-up-two-factor-authentication-optional" class="level3">
+<h3 class="anchored" data-anchor-id="set-up-two-factor-authentication-optional">1.9 Set Up Two-Factor Authentication (Optional)</h3>
+<p>For added security, consider enabling two-factor authentication if Alpaca offers this feature.</p>
+</section>
+</section>
+<section id="step-2-paper-trading-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-paper-trading-configuration">Step 2: Paper trading configuration</h2>
+<p><strong>Alert:</strong> Do not trade your money! Do not add funds!!!</p>
+<p>In this step, you’ll be setting up and configuring your paper trading account on Alpaca. Paper trading allows you to simulate trading in a risk-free environment using virtual money. It’s an essential step before deploying your algorithm with real funds.</p>
+<section id="log-in-to-your-alpaca-account" class="level3">
+<h3 class="anchored" data-anchor-id="log-in-to-your-alpaca-account">Log in to your Alpaca Account</h3>
+<p>Visit the Alpaca website and log in to your account using the credentials you created during the signup process.</p>
+</section>
+<section id="navigate-to-paper-overview" class="level3">
+<h3 class="anchored" data-anchor-id="navigate-to-paper-overview">Navigate to “Paper Overview”</h3>
+<p>Once logged in, find and click on the “Paper Overview” section. This is where you’ll configure and manage your paper trading account.</p>
+</section>
+<section id="understand-paper-trading-account-settings" class="level3">
+<h3 class="anchored" data-anchor-id="understand-paper-trading-account-settings">Understand Paper Trading Account Settings</h3>
+<p>Take a close look at the settings of your paper trading account. You’ll typically see details such as starting equity and buying power. - <strong>Starting equity</strong> is the initial amount of virtual money allocated to your paper trading account. - <strong>Buying power</strong> represents the total amount of virtual money you can use for trading.</p>
+</section>
+<section id="resetting-paper-trading-account" class="level3">
+<h3 class="anchored" data-anchor-id="resetting-paper-trading-account">Resetting Paper Trading Account</h3>
+<p>Note that you can reset your paper trading account at any time by clicking the “Reset” button. This action will return your starting equity and buying power to their original values.</p>
+</section>
+<section id="familiarize-yourself-with-the-interface" class="level3">
+<h3 class="anchored" data-anchor-id="familiarize-yourself-with-the-interface">Familiarize Yourself with the Interface</h3>
+<p>Explore the paper trading interface to understand how to place orders, view your portfolio, and track performance.<br>
+Get comfortable with the tools and features available in the paper trading environment.</p>
+<hr>
+</section>
+</section>
+<section id="step-3-obtain-api-keys" class="level2">
+<h2 class="anchored" data-anchor-id="step-3-obtain-api-keys">Step 3: Obtain API Keys</h2>
+<p>API keys are essential for connecting your trading algorithm to the Alpaca trading account. They act as a secure way to authenticate and authorize your algorithm to interact with the Alpaca API.</p>
+<section id="sign-in-to-your-alpaca-account" class="level3">
+<h3 class="anchored" data-anchor-id="sign-in-to-your-alpaca-account">Sign in to Your Alpaca Account</h3>
+<p>Go to the Alpaca website and sign in to your account using your credentials.</p>
+</section>
+<section id="navigate-to-your-trading-account" class="level3">
+<h3 class="anchored" data-anchor-id="navigate-to-your-trading-account">Navigate to Your Trading Account</h3>
+<p>Once logged in, navigate to your trading account. This is where you’ll find the information and settings related to your Alpaca API keys.</p>
+</section>
+<section id="locate-api-keys" class="level3">
+<h3 class="anchored" data-anchor-id="locate-api-keys">Locate API Keys</h3>
+<p>In the overview or account settings section, look for the area where API keys are displayed. Alpaca usually provides separate keys for the paper trading account and the live trading account.</p>
+</section>
+<section id="view-and-copy-api-keys" class="level3">
+<h3 class="anchored" data-anchor-id="view-and-copy-api-keys">View and Copy API Keys</h3>
+<p>Once you’ve located the API keys, you should be able to view and copy them. These keys typically include: - <strong>API Key ID:</strong> A unique identifier for your API key. - <strong>Secret Key:</strong> A secret passphrase that, along with the API Key ID, is used for authentication.</p>
+</section>
+<section id="keep-api-keys-secure" class="level3">
+<h3 class="anchored" data-anchor-id="keep-api-keys-secure">Keep API Keys Secure</h3>
+<p>Treat your API keys like sensitive information. Keep them secure and private to prevent unauthorized access to your Alpaca account.<br>
+Avoid sharing your API keys in public forums or repositories.</p>
+</section>
+<section id="understand-key-permissions" class="level3">
+<h3 class="anchored" data-anchor-id="understand-key-permissions">Understand Key Permissions</h3>
+<p>API keys come with certain permissions that define what actions your algorithm can perform. Ensure that the permissions associated with your keys align with the requirements of your trading strategy.</p>
+</section>
+<section id="test-api-keys" class="level3">
+<h3 class="anchored" data-anchor-id="test-api-keys">Test API Keys</h3>
+<p>Before integrating the keys into your algorithm, consider testing them with simple API requests to ensure they are valid and working as expected.</p>
+<hr>
+</section>
+</section>
+<section id="step-4-getting-market-data-from-alpaca" class="level2">
+<h2 class="anchored" data-anchor-id="step-4-getting-market-data-from-alpaca">Step 4: Getting Market Data from Alpaca</h2>
+<p>In this step, you’ll choose the asset you want to trade (crypto or stock) and explore how to retrieve market data from Alpaca using the alpaca-py library. Feel free to choose any other library or ways to connect to Alpaca.</p>
+<section id="choose-the-asset-to-trade" class="level3">
+<h3 class="anchored" data-anchor-id="choose-the-asset-to-trade">Choose the Asset to Trade</h3>
+<p>Decide whether you want to trade cryptocurrencies or stocks. Note that if you choose crypto, markets are available 24/7, while stock markets operate during specific hours.</p>
+</section>
+<section id="explore-alpaca-github-repository" class="level3">
+<h3 class="anchored" data-anchor-id="explore-alpaca-github-repository">Explore Alpaca GitHub Repository</h3>
+<p>Visit Alpaca’s GitHub repository to find examples and documentation on how to interact with the Alpaca API using the alpaca-py library.<br>
+The repository often contains code samples and tutorials that can guide you through the process of retrieving market data.</p>
+</section>
+<section id="install-alpaca-py-library" class="level3">
+<h3 class="anchored" data-anchor-id="install-alpaca-py-library">Install alpaca-py Library</h3>
+<p>Using your preferred package manager (e.g., pip), install the alpaca-py library. This library provides a Python interface for interacting with the Alpaca API.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install alpaca-trade-api</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="review-alpaca-api-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="review-alpaca-api-documentation">Review Alpaca API Documentation</h3>
+<p>Explore Alpaca’s official documentation for market data to understand the available endpoints, parameters, and data formats.<br>
+The documentation is often well-detailed and provides examples of how to make requests for market data.</p>
+</section>
+<section id="understand-asset-symbols-and-market-hours" class="level3">
+<h3 class="anchored" data-anchor-id="understand-asset-symbols-and-market-hours">Understand Asset Symbols and Market Hours</h3>
+<p>For stocks, be aware of the symbols associated with the assets you’re interested in. Understand the market hours for stocks as Alpaca provides data only during these hours.<br>
+For cryptocurrencies, you can access data 24/7.</p>
+</section>
+<section id="sample-code-for-getting-market-data" class="level3">
+<h3 class="anchored" data-anchor-id="sample-code-for-getting-market-data">Sample Code for Getting Market Data</h3>
+<p>Write sample code using alpaca-py to retrieve market data. This might involve specifying the asset symbol, time interval, and other relevant parameters.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> alpaca_trade_api <span class="im">as</span> tradeapi</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Set your API key and secret</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>api_key <span class="op">=</span> <span class="st">'your_api_key'</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>api_secret <span class="op">=</span> <span class="st">'your_api_secret'</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>base_url <span class="op">=</span> <span class="st">'https://paper-api.alpaca.markets'</span>  <span class="co"># Use paper trading base URL for testing</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize Alpaca API</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>api <span class="op">=</span> tradeapi.REST(api_key, api_secret, base_url, api_version<span class="op">=</span><span class="st">'v2'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get historical market data</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>symbol <span class="op">=</span> <span class="st">'AAPL'</span>  <span class="co"># Replace with your desired stock symbol</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>timeframe <span class="op">=</span> <span class="st">'1D'</span>  <span class="co"># Daily timeframe</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>historical_data <span class="op">=</span> api.get_barset(symbol, timeframe).df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>Advice: If you want to trade real time, you can also use the FIX api.</em></p>
+</section>
+<section id="handle-authentication-and-rate-limits" class="level3">
+<h3 class="anchored" data-anchor-id="handle-authentication-and-rate-limits">Handle Authentication and Rate Limits</h3>
+<p>Ensure that your code handles authentication properly using the API key and secret.<br>
+Be mindful of rate limits imposed by Alpaca. Consider implementing rate-limiting mechanisms in your code to avoid exceeding these limits.</p>
+</section>
+<section id="explore-additional-data-endpoints" class="level3">
+<h3 class="anchored" data-anchor-id="explore-additional-data-endpoints">Explore Additional Data Endpoints</h3>
+<p>Beyond historical data, explore other endpoints provided by Alpaca for real-time data, account information, and more. This exploration will help you gather the necessary data for making informed trading decisions.</p>
+<p>By following these steps, you’ll be able to connect to Alpaca, retrieve historical market data, and lay the foundation for building your trading algorithm. The alpaca-py library simplifies the process of interacting with the Alpaca API, making it easier to integrate market data into your trading system.</p>
+<hr>
+</section>
+</section>
+<section id="step-5-saving-market-data" class="level2">
+<h2 class="anchored" data-anchor-id="step-5-saving-market-data">Step 5: Saving Market Data</h2>
+<p><em>Advice: Do not overcomplicate this part if you do not have time. You can just record the data on the disk (using the pickle library like we did it in class) and use the data.</em></p>
+<p>In this step, you’ll focus on devising a strategy for efficiently saving the market data you retrieve from Alpaca. Properly storing this data is crucial for backtesting, analysis, and making informed trading decisions.</p>
+<section id="choose-data-storage-method" class="level3">
+<h3 class="anchored" data-anchor-id="choose-data-storage-method">Choose Data Storage Method</h3>
+<p>Decide on the method of data storage. Common options include using databases, such as SQLite, MySQL, or PostgreSQL, or saving data to flat files like CSV (Comma-Separated Values) or JSON.</p>
+<section id="database-storage" class="level4">
+<h4 class="anchored" data-anchor-id="database-storage">Database Storage</h4>
+<p>If opting for a database, create a database schema that accommodates the type of data you’ll be collecting (e.g., OHLCV - Open, High, Low, Close, Volume data).<br>
+Establish tables to organize data efficiently, considering factors like asset symbols, timeframes, and timestamps.</p>
+</section>
+<section id="file-storage" class="level4">
+<h4 class="anchored" data-anchor-id="file-storage">File Storage</h4>
+<p>If choosing file storage, determine a structured format for your files. For example, you might save each asset’s data in separate CSV files with columns representing relevant data points.<br>
+Consider creating a directory structure to organize files by asset and timeframe.</p>
+</section>
+</section>
+<section id="timestamps-and-timezones" class="level3">
+<h3 class="anchored" data-anchor-id="timestamps-and-timezones">Timestamps and Timezones</h3>
+<p>Ensure that your storage method accounts for timestamps and timezones accurately. Timestamps are crucial for aligning data with specific points in time, and timezones ensure consistency across different data sources.</p>
+</section>
+<section id="regular-updates" class="level3">
+<h3 class="anchored" data-anchor-id="regular-updates">Regular Updates</h3>
+<p>Plan for regular updates to your stored data. Depending on your trading frequency, you may need to update your data at intervals to ensure that your algorithm has access to the latest information.</p>
+</section>
+<section id="automate-data-retrieval-and-storage" class="level3">
+<h3 class="anchored" data-anchor-id="automate-data-retrieval-and-storage">Automate Data Retrieval and Storage</h3>
+<p>Consider automating the process of data retrieval and storage. Schedule tasks or scripts to run at specific intervals to fetch fresh data from Alpaca and update your storage accordingly.</p>
+</section>
+<section id="backtesting-integration" class="level3">
+<h3 class="anchored" data-anchor-id="backtesting-integration">Backtesting Integration</h3>
+<p>Design your storage system with backtesting in mind. Ensure that it’s easy to retrieve historical data from your chosen storage method for use in backtesting your trading algorithm.</p>
+</section>
+<section id="data-cleaning-and-validation" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-and-validation">Data Cleaning and Validation</h3>
+<p>Implement data cleaning and validation processes to ensure the integrity of the stored data. This includes handling missing or erroneous data points and maintaining data quality.</p>
+<p>By carefully planning and implementing a strategy for saving market data, you create a robust foundation for your algorithmic trading system. This step ensures that your trading algorithm has access to accurate and up-to-date historical data, enabling effective backtesting and analysis.</p>
+<hr>
+</section>
+</section>
+<section id="step-7-develop-a-trading-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="step-7-develop-a-trading-strategy">Step 7: Develop a Trading Strategy</h2>
+<p>In this step, you’ll define a clear and effective trading strategy that your algorithm will follow. A trading strategy outlines the conditions under which your algorithm will make buy or sell decisions. Here are the key aspects to consider:</p>
+<section id="define-your-trading-goals" class="level3">
+<h3 class="anchored" data-anchor-id="define-your-trading-goals">Define Your Trading Goals</h3>
+<p>Clearly articulate your financial goals and risk tolerance. Are you looking for short-term gains, long-term growth, or a balance of both? Understanding your goals will guide the development of your strategy.</p>
+</section>
+<section id="select-trading-instruments" class="level3">
+<h3 class="anchored" data-anchor-id="select-trading-instruments">Select Trading Instruments</h3>
+<p>Determine the financial instruments you want your algorithm to trade. This could include stocks, cryptocurrencies, or other assets. Consider factors like liquidity, volatility, and market hours.</p>
+</section>
+<section id="technical-indicators-and-signals" class="level3">
+<h3 class="anchored" data-anchor-id="technical-indicators-and-signals">Technical Indicators and Signals</h3>
+<p>Choose the technical indicators and signals that your algorithm will use to make decisions. Common indicators include moving averages, relative strength index (RSI), and moving average convergence divergence (MACD).<br>
+<em>Advice: You can use a cross moving average signal or a linear regression.</em></p>
+</section>
+<section id="backtesting" class="level3">
+<h3 class="anchored" data-anchor-id="backtesting">Backtesting</h3>
+<p>Backtest your trading strategy using historical market data. This involves running your algorithm on past data to simulate how it would have performed. Backtesting helps you identify strengths and weaknesses in your strategy.</p>
+</section>
+<section id="paper-trading" class="level3">
+<h3 class="anchored" data-anchor-id="paper-trading">Paper Trading</h3>
+<p>Before deploying your algorithm, test it in a simulated environment using paper trading. This allows you to validate its performance in real market conditions without risking actual money.</p>
+</section>
+<section id="real-time-monitoring" class="level3">
+<h3 class="anchored" data-anchor-id="real-time-monitoring">Real-time Monitoring</h3>
+<p>Once live, monitor your algorithm’s performance in real-time. Keep an eye on key metrics, such as the success rate of trades, drawdowns, and overall portfolio performance. Be prepared to make adjustments based on market conditions.</p>
+<p>Developing a robust and effective trading strategy is a critical step in the success of your algorithmic trading system. It requires a combination of technical analysis, risk management, and adaptability to navigate the dynamic nature of financial markets.</p>
+<hr>
+</section>
+</section>
+<section id="deliverables" class="level2">
+<h2 class="anchored" data-anchor-id="deliverables">Deliverables</h2>
+<section id="python-code-uploaded-to-canvas" class="level3">
+<h3 class="anchored" data-anchor-id="python-code-uploaded-to-canvas">Python Code Uploaded to Canvas</h3>
+<p>Upload the complete Python code for your algorithmic trading system to the Canvas platform (class project phase 3). Ensure that the code is well-organized, commented, and includes necessary documentation within the code itself.</p>
+</section>
+<section id="document-explaining-what-was-done" class="level3">
+<h3 class="anchored" data-anchor-id="document-explaining-what-was-done">Document Explaining What Was Done</h3>
+<p>Create a comprehensive document that provides an overview of your algorithmic trading system. This document should include the following sections:</p>
+<section id="introduction" class="level4">
+<h4 class="anchored" data-anchor-id="introduction">Introduction</h4>
+<p>Briefly introduce the purpose and goals of your trading system.</p>
+</section>
+<section id="market-data-retrieval" class="level4">
+<h4 class="anchored" data-anchor-id="market-data-retrieval">Market Data Retrieval</h4>
+<p>Explain how you retrieve market data from Alpaca using the alpaca-py library. Include code snippets and examples.</p>
+</section>
+<section id="data-storage-strategy" class="level4">
+<h4 class="anchored" data-anchor-id="data-storage-strategy">Data Storage Strategy</h4>
+<p>Describe your strategy for saving market data. Discuss the chosen storage method (database or file system), the structure of data storage, and considerations for timestamps and timezones.</p>
+</section>
+<section id="trading-strategy-development" class="level4">
+<h4 class="anchored" data-anchor-id="trading-strategy-development">Trading Strategy Development</h4>
+<p>Outline the steps taken to develop your trading strategy. Discuss the selection of trading instruments, technical indicators, risk management rules, and position sizing.</p>
+</section>
+<section id="code-explanation" class="level4">
+<h4 class="anchored" data-anchor-id="code-explanation">Code Explanation</h4>
+<p>Provide a detailed explanation of key sections of your Python code. Highlight important functions, variables, and decision-making processes.</p>
+</section>
+<section id="testing-and-optimization" class="level4">
+<h4 class="anchored" data-anchor-id="testing-and-optimization">Testing and Optimization</h4>
+<p>Discuss how you tested your trading strategy, including backtesting and optimization steps. Explain any adjustments made based on testing results.</p>
+</section>
+<section id="automation-and-scheduling" class="level4">
+<h4 class="anchored" data-anchor-id="automation-and-scheduling">Automation and Scheduling</h4>
+<p>Detail how you automated the data retrieval process and scheduled tasks to update market data. Include information on error handling, logging, and script version control.</p>
+</section>
+<section id="paper-trading-and-monitoring" class="level4">
+<h4 class="anchored" data-anchor-id="paper-trading-and-monitoring">Paper Trading and Monitoring</h4>
+<p>Explain how you utilized Alpaca’s paper trading feature to simulate live market conditions. Discuss how you monitored your algorithm’s performance in a risk-free environment.</p>
+</section>
+<section id="results-and-lessons-learned" class="level4">
+<h4 class="anchored" data-anchor-id="results-and-lessons-learned">Results and Lessons Learned</h4>
+<p>Reflect on the results of your project. Discuss any challenges encountered, lessons learned, and potential improvements for future iterations.</p>
+</section>
+<section id="compliance-and-legal-considerations" class="level4">
+<h4 class="anchored" data-anchor-id="compliance-and-legal-considerations">Compliance and Legal Considerations</h4>
+<p>Briefly touch on any compliance or legal considerations related to algorithmic trading. Mention how your system aligns with relevant financial regulations.</p>
+</section>
+<section id="conclusion" class="level4">
+<h4 class="anchored" data-anchor-id="conclusion">Conclusion</h4>
+<p>Summarize your project, highlighting key achievements and outcomes.</p>
+<p>By preparing these deliverables, you’ll provide a comprehensive overview of your algorithmic trading system, making it easier for your students or peers to understand, evaluate, and potentially replicate or build upon your work.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<p>Below is a simple Python code example to get you started with a basic algorithmic trading project using Alpaca. This example focuses on fetching historical market data and placing alternating Buy and Sell orders every 5 seconds in a paper trading environment.</p>
+<p>Please note that this is a basic illustration, and a complete trading system would require more sophisticated strategies, risk management, and error handling.</p>
+<p>But if you are getting something similar, you will get full points. The more you enhance your system, the better it will be for your interviews.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> alpaca_trade_api <span class="im">as</span> tradeapi</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set your Alpaca API key and secret</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>API_KEY <span class="op">=</span> <span class="st">'your_api_key'</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>API_SECRET <span class="op">=</span> <span class="st">'your_api_secret'</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>BASE_URL <span class="op">=</span> <span class="st">'https://paper-api.alpaca.markets'</span>  <span class="co"># Use paper trading base URL for testing</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize Alpaca API</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>api <span class="op">=</span> tradeapi.REST(API_KEY, API_SECRET, base_url<span class="op">=</span>BASE_URL, api_version<span class="op">=</span><span class="st">'v2'</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the asset symbol and trading interval</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>symbol <span class="op">=</span> <span class="st">'AAPL'</span>  <span class="co"># Replace with your desired stock symbol</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>interval <span class="op">=</span> <span class="dv">5</span>  <span class="co"># Time interval in seconds</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Main trading loop</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get historical market data for the specified symbol and interval</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        historical_data <span class="op">=</span> api.get_barset(symbol, <span class="st">'1Min'</span>, limit<span class="op">=</span><span class="dv">1</span>).df[symbol]</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get the last close price</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        last_close_price <span class="op">=</span> historical_data[<span class="st">'close'</span>].iloc[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Determine whether to place a Buy or Sell order based on alternating intervals</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> time.time() <span class="op">%</span> (<span class="dv">2</span> <span class="op">*</span> interval) <span class="op">&lt;</span> interval:</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Place Buy order</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>            api.submit_order(</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>                symbol<span class="op">=</span>symbol,</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>                qty<span class="op">=</span><span class="dv">1</span>,  <span class="co"># Adjust quantity as needed</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>                side<span class="op">=</span><span class="st">'buy'</span>,</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                <span class="bu">type</span><span class="op">=</span><span class="st">'limit'</span>,</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>                time_in_force<span class="op">=</span><span class="st">'gtc'</span>,</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>                limit_price<span class="op">=</span>last_close_price <span class="op">*</span> <span class="fl">1.01</span>,  <span class="co"># Place a limit order slightly above the current price</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Buy order placed at </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(last_close_price))</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Place Sell order</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>            api.submit_order(</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>                symbol<span class="op">=</span>symbol,</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>                qty<span class="op">=</span><span class="dv">1</span>,  <span class="co"># Adjust quantity as needed</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>                side<span class="op">=</span><span class="st">'sell'</span>,</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>                <span class="bu">type</span><span class="op">=</span><span class="st">'limit'</span>,</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>                time_in_force<span class="op">=</span><span class="st">'gtc'</span>,</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>                limit_price<span class="op">=</span>last_close_price <span class="op">*</span> <span class="fl">0.99</span>,  <span class="co"># Place a limit order slightly below the current price</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Sell order placed at </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(last_close_price))</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Wait for the next interval</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>        time.sleep(interval)</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"An error occurred: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add proper error handling based on your requirements</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Please replace ‘your_api_key’ and ‘your_api_secret’ with your actual Alpaca API key and secret. This example uses a basic alternating Buy/Sell strategy, and you would need to adapt and expand upon this foundation to create a more sophisticated and effective trading algorithm.</p>
+<p>Additionally, keep in mind that algorithmic trading involves real financial risks, and it’s crucial to thoroughly test and understand any strategy in a simulated environment before deploying it with real funds.</p>
+<hr>
+</section>
+<section id="sharing-your-work-with-recruiters-optional" class="level2">
+<h2 class="anchored" data-anchor-id="sharing-your-work-with-recruiters-optional">Sharing your work with recruiters (optional)</h2>
+<p>Protecting one’s code and ensuring its security is crucial, especially when showcasing it on platforms like GitHub. Let’s add a section on using GitHub for code visibility while maintaining security.</p>
+<hr>
+</section>
+<section id="deliverables-1" class="level2">
+<h2 class="anchored" data-anchor-id="deliverables-1">Deliverables</h2>
+<section id="github-repository" class="level3">
+<h3 class="anchored" data-anchor-id="github-repository">GitHub Repository</h3>
+<ul>
+<li>Create a private GitHub repository to host your algorithmic trading system code. Mark the repository as private to control access to the code.</li>
+<li>Provide access only to trusted individuals, such as recruiters, mentors, or collaborators.</li>
+</ul>
+</section>
+<section id="readme-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="readme-documentation">Readme Documentation</h3>
+<p>Include a comprehensive <code>README.md</code> file in your GitHub repository. This file should serve as a guide for anyone accessing the repository and should include:</p>
+<section id="introduction-1" class="level4">
+<h4 class="anchored" data-anchor-id="introduction-1">Introduction</h4>
+<p>Briefly introduce the project, its goals, and the technologies used.</p>
+</section>
+<section id="repository-structure" class="level4">
+<h4 class="anchored" data-anchor-id="repository-structure">Repository Structure</h4>
+<p>Outline the structure of your repository, indicating the main Python script, any additional scripts, and supporting documents.</p>
+</section>
+<section id="setup-instructions" class="level4">
+<h4 class="anchored" data-anchor-id="setup-instructions">Setup Instructions</h4>
+<p>Provide clear instructions on how to set up and run the code locally. Include any dependencies or configurations needed.</p>
+</section>
+<section id="code-explanation-1" class="level4">
+<h4 class="anchored" data-anchor-id="code-explanation-1">Code Explanation</h4>
+<p>Offer a high-level explanation of your code’s architecture, key functions, and main logic.</p>
+</section>
+<section id="usage-examples" class="level4">
+<h4 class="anchored" data-anchor-id="usage-examples">Usage Examples</h4>
+<p>If applicable, provide examples of how to use or interact with your algorithm. This can include sample inputs or scenarios.</p>
+</section>
+<section id="results-and-screenshots" class="level4">
+<h4 class="anchored" data-anchor-id="results-and-screenshots">Results and Screenshots</h4>
+<p>Include any relevant results, performance metrics, or screenshots demonstrating the output</p>
+<p>Only provide repository access to trusted individuals. Use GitHub’s collaboration features to manage access levels carefully. API Key Security:</p>
+<p>If your code involves API keys, provide guidance on how to handle them securely. Encourage users to use environment variables or other secure methods to protect sensitive information. Avoid Hardcoding Secrets:</p>
+<p>Highlight the importance of avoiding the hardcoding of sensitive information like API keys directly in the code. VERY IMPORTANT: DO NOT SHARE YOUR API KEYS</p>
+<p>Canvas Submission Update: Update the Canvas submission instructions to include a link to the private GitHub repository. Clearly communicate that this repository is for viewing purposes only and should not be shared publicly. By leveraging GitHub, you provide a platform for recruiters to easily access and review your code while maintaining control over who has access to it. Emphasizing security measures ensures responsible code sharing and protects sensitive information.</p>
+<p>You will upload your code and you write up using a zip/tar file OR you can upload the file and write the write up in canvas.</p>
+</section>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

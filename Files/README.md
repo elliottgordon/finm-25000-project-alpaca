@@ -1,1 +1,0 @@
-# finm-25000-project-alpaca
