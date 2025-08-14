@@ -4,7 +4,7 @@ from data_saver import run_data_saver
 from real_time_data import get_last_quote
 
 schedule.every(5).minutes.do(run_data_saver)
-# you probably want some rate limiting feature here
+# you probably want some rate limiting feature here to not get boxed out of alpaca API
 schedule.every(3).seconds.do(get_last_quote)
 
 while True:
