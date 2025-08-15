@@ -1,5 +1,13 @@
-# API Keys and Secrets
-Alpaca_API.py  # Commented out - we want to track this for academic project
+# API Keys and Secrets - NEVER commit these to git!
+Alpaca_API.py
+*.env
+.env*
+config.py
+credentials.py
+secrets.py
+api_keys.py
+*_secrets.py
+*_credentials.py
 
 # Virtual environments
 alpaca_venv/
