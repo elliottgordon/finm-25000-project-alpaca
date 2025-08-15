@@ -31,7 +31,11 @@ class StrategyAnalyzer:
     def get_full_historical_data(self, symbol='SPY', years=2):
         """Get more historical data for comprehensive analysis"""
         try:
-            db_path = '../Step 5: Saving Market Data/market_data.db'
+            # --- FIX STARTS HERE ---
+            # Construct a reliable path to the database file
+            db_path = os.path.join(PARENT_DIR, 'Step 5: Saving Market Data', 'market_data.db')
+            # --- FIX ENDS HERE ---
+            
             conn = sqlite3.connect(db_path)
             
             # Get last 2 years of data for better analysis

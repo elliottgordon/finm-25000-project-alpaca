@@ -49,7 +49,15 @@ class RSIMeanReversionStrategy:
     6. Real-time Monitoring
     """
     
-    def __init__(self, db_path='../Step 5: Saving Market Data/market_data.db'):
+    def __init__(self, db_path=None):
+        # Use absolute path for the database file
+        if db_path is None:
+            self.db_path = os.path.abspath(os.path.join(
+                os.path.dirname(__file__),
+                '../../Step 5: Saving Market Data/market_data.db'))
+        else:
+            self.db_path = db_path
+
         # 1. DEFINE TRADING GOALS (Assignment Step 7.1)
         self.trading_goals = {
             'objective': 'Short-term mean reversion with RSI confirmation',
@@ -57,31 +65,40 @@ class RSIMeanReversionStrategy:
             'target_return': 'Consistent small gains with limited downside',
             'time_horizon': 'Short-term (1-5 days per trade)'
         }
-        
+
         # 2. SELECT TRADING INSTRUMENTS (Assignment Step 7.2)
-        self.trading_instruments = ['SPY', 'VXX']  # Using our existing data
-        self.primary_symbol = 'SPY'  # Focus on SPY for main strategy
-        
+        # Dynamically select all unique symbols from the database
+        try:
+            conn = sqlite3.connect(self.db_path)
+            query = "SELECT DISTINCT symbol FROM market_data"
+            symbols_df = pd.read_sql_query(query, conn)
+            conn.close()
+            self.trading_instruments = symbols_df['symbol'].tolist()
+            self.primary_symbol = self.trading_instruments[0] if self.trading_instruments else 'SPY'
+        except Exception as e:
+            logging.error(f"Error loading trading instruments from DB: {e}")
+            # halt process
+            sys.exit(1)
+
         # 3. TECHNICAL INDICATORS AND SIGNALS (Assignment Step 7.3)
         # RSI Parameters
         self.rsi_period = 14
         self.rsi_oversold = 30
         self.rsi_overbought = 70
-        
+
         # Mean Reversion Parameters
         self.lookback_period = 20  # For mean calculation
         self.mean_reversion_threshold = 2.0  # Standard deviations
-        
+
         # Risk Management
         self.position_size = 100  # Share quantity per trade
         self.stop_loss_pct = 0.02  # 2% stop loss
         self.take_profit_pct = 0.01  # 1% take profit
-        
-        # Database and API setup
-        self.db_path = db_path
+
+        # API setup
         self.trading_client = TradingClient(ALPACA_KEY, ALPACA_SECRET, paper=True)
         self.data_client = StockHistoricalDataClient(ALPACA_KEY, ALPACA_SECRET)
-        
+
         logging.info("RSI Mean Reversion Strategy initialized")
         logging.info(f"Trading Goals: {self.trading_goals}")
         logging.info(f"Trading Instruments: {self.trading_instruments}")
