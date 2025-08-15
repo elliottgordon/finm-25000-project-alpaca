@@ -1,5 +1,5 @@
-# Step 7: Develop a Trading Strategy
-# Implementation following assignment requirements step-by-step
+# Step 7: Develop a Trading Strategy - Professional Implementation
+# Comprehensive Mean Reversion Strategy using Bollinger Bands
 
 import os
 import sys
@@ -9,6 +9,7 @@ import sqlite3
 from datetime import datetime, timedelta
 import pytz
 import logging
+from typing import Dict, List, Tuple, Optional
 
 # Add parent directory to path for imports
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -16,15 +17,18 @@ PARENT_DIR = os.path.dirname(CURRENT_DIR)
 if PARENT_DIR not in sys.path:
     sys.path.insert(0, PARENT_DIR)
 
-from Alpaca_API import ALPACA_KEY, ALPACA_SECRET
-
 # Import Alpaca API
-from alpaca.trading.client import TradingClient
-from alpaca.data.historical import StockHistoricalDataClient
-from alpaca.data.requests import StockBarsRequest
-from alpaca.data.timeframe import TimeFrame
-from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest
-from alpaca.trading.enums import OrderSide, TimeInForce
+try:
+    from alpaca.trading.client import TradingClient
+    from alpaca.data.historical import StockHistoricalDataClient
+    from alpaca.data.requests import StockBarsRequest
+    from alpaca.data.timeframe import TimeFrame
+    from alpaca.trading.requests import MarketOrderRequest, LimitOrderRequest
+    from alpaca.trading.enums import OrderSide, TimeInForce
+    ALPACA_AVAILABLE = True
+except ImportError:
+    ALPACA_AVAILABLE = False
+    logging.warning("Alpaca API not available - running in simulation mode")
 
 # Setup logging
 logging.basicConfig(
@@ -36,448 +40,235 @@ logging.basicConfig(
     ]
 )
 
-class RSIMeanReversionStrategy:
+class BollingerBandMeanReversionStrategy:
     """
-    Step 7: Trading Strategy Implementation
-    
-    Following assignment requirements:
-    1. Define Trading Goals
-    2. Select Trading Instruments
-    3. Technical Indicators and Signals (RSI + Mean Reversion)
-    4. Backtesting capability
-    5. Paper Trading integration
-    6. Real-time Monitoring
+    Implements a mean reversion strategy using Bollinger Bands for signal generation.
     """
     
-    def __init__(self, db_path=None):
-        # Use absolute path for the database file
+    def __init__(self, db_path=None, window: int = 20, std_dev: float = 2.5):
+        # Database setup
         if db_path is None:
             self.db_path = os.path.abspath(os.path.join(
                 os.path.dirname(__file__),
-                '../../Step 5: Saving Market Data/market_data.db'))
+                '../Step 5: Saving Market Data/market_data.db'))
         else:
             self.db_path = db_path
 
-        # 1. DEFINE TRADING GOALS (Assignment Step 7.1)
+        # 1. DEFINE TRADING GOALS
         self.trading_goals = {
-            'objective': 'Short-term mean reversion with RSI confirmation',
+            'primary_objective': 'Implement a robust Bollinger Band mean reversion strategy',
+            'return_target': 'Consistent alpha from short-term price reversions',
             'risk_tolerance': 'Moderate',
-            'target_return': 'Consistent small gains with limited downside',
-            'time_horizon': 'Short-term (1-5 days per trade)'
+            'time_horizon': 'Short-term (1-10 days per trade)',
         }
 
-        # 2. SELECT TRADING INSTRUMENTS (Assignment Step 7.2)
-        # Dynamically select all unique symbols from the database
-        try:
-            conn = sqlite3.connect(self.db_path)
-            query = "SELECT DISTINCT symbol FROM market_data"
-            symbols_df = pd.read_sql_query(query, conn)
-            conn.close()
-            self.trading_instruments = symbols_df['symbol'].tolist()
-            self.primary_symbol = self.trading_instruments[0] if self.trading_instruments else 'SPY'
-        except Exception as e:
-            logging.error(f"Error loading trading instruments from DB: {e}")
-            # halt process
-            sys.exit(1)
-
-        # 3. TECHNICAL INDICATORS AND SIGNALS (Assignment Step 7.3)
-        # RSI Parameters
-        self.rsi_period = 14
-        self.rsi_oversold = 30
-        self.rsi_overbought = 70
-
-        # Mean Reversion Parameters
-        self.lookback_period = 20  # For mean calculation
-        self.mean_reversion_threshold = 2.0  # Standard deviations
+        # 2. TECHNICAL INDICATORS AND SIGNALS (Now accepts dynamic parameters)
+        self.strategy_parameters = {
+            'bollinger_window': window,
+            'bollinger_std_dev': std_dev,
+        }
 
         # Risk Management
-        self.position_size = 100  # Share quantity per trade
-        self.stop_loss_pct = 0.02  # 2% stop loss
-        self.take_profit_pct = 0.01  # 1% take profit
+        self.risk_parameters = {
+            'max_position_size': 0.50,  # 25% max per position
+        }
 
-        # API setup
-        self.trading_client = TradingClient(ALPACA_KEY, ALPACA_SECRET, paper=True)
-        self.data_client = StockHistoricalDataClient(ALPACA_KEY, ALPACA_SECRET)
+        # API setup (if available)
+        if ALPACA_AVAILABLE:
+            try:
+                from Alpaca_API import ALPACA_KEY, ALPACA_SECRET
+                self.trading_client = TradingClient(ALPACA_KEY, ALPACA_SECRET, paper=True)
+                self.data_client = StockHistoricalDataClient(ALPACA_KEY, ALPACA_SECRET)
+                self.api_available = True
+            except ImportError:
+                self.api_available = False
+                logging.warning("Alpaca credentials not found - running in simulation mode")
+        else:
+            self.api_available = False
 
-        logging.info("RSI Mean Reversion Strategy initialized")
-        logging.info(f"Trading Goals: {self.trading_goals}")
-        logging.info(f"Trading Instruments: {self.trading_instruments}")
+        # Suppress INFO logs during optimization runs for cleaner output
+        if __name__ != "__main__":
+            logging.getLogger().setLevel(logging.WARNING)
+
     
-    def calculate_rsi(self, prices, period=14):
-        """
-        Calculate RSI (Relative Strength Index)
-        RSI = 100 - (100 / (1 + RS))
-        RS = Average Gain / Average Loss
-        """
-        delta = prices.diff()
-        gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-        loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-        
-        rs = gain / loss
-        rsi = 100 - (100 / (1 + rs))
-        return rsi
-    
-    def calculate_mean_reversion_signal(self, prices, lookback=20, threshold=2.0):
-        """
-        Calculate Mean Reversion Signal
-        Signal based on how many standard deviations current price is from moving average
-        """
-        rolling_mean = prices.rolling(window=lookback).mean()
-        rolling_std = prices.rolling(window=lookback).std()
-        
-        # Z-score calculation
-        z_score = (prices - rolling_mean) / rolling_std
-        
-        return z_score, rolling_mean, rolling_std
-    
-    def get_historical_data_from_db(self, symbol, days=100):
-        """Get historical data from our existing database"""
+    def get_historical_data_from_db(self, symbol: str) -> pd.DataFrame:
+        """Get ALL historical data from our existing database for a symbol."""
         try:
             conn = sqlite3.connect(self.db_path)
-            
-            # Get recent data for analysis
-            end_date = datetime.now()
-            start_date = end_date - timedelta(days=days)
-            
             query = """
                 SELECT timestamp, close, high, low, open, volume
                 FROM market_data 
                 WHERE symbol = ? 
-                AND timestamp >= ? 
-                AND timestamp <= ?
                 ORDER BY timestamp ASC
             """
-            
-            df = pd.read_sql_query(query, conn, params=[symbol, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')])
+            df = pd.read_sql_query(query, conn, params=[symbol])
             conn.close()
             
             if not df.empty:
-                # Handle different timestamp formats
-                try:
-                    df['timestamp'] = pd.to_datetime(df['timestamp'])
-                except ValueError:
-                    # Try different formats
-                    df['timestamp'] = pd.to_datetime(df['timestamp'], format='mixed')
-                
+                df['timestamp'] = pd.to_datetime(df['timestamp'])
                 df.set_index('timestamp', inplace=True)
-                
-                logging.info(f"Retrieved {len(df)} records for {symbol}")
             
             return df
             
         except Exception as e:
             logging.error(f"Error retrieving historical data: {e}")
             return pd.DataFrame()
-    
-    def generate_trading_signals(self, symbol='SPY'):
+
+    def calculate_bollinger_bands(self, prices: pd.Series) -> pd.DataFrame:
+        """Calculates Bollinger Bands."""
+        window = self.strategy_parameters['bollinger_window']
+        std_dev = self.strategy_parameters['bollinger_std_dev']
+        
+        rolling_mean = prices.rolling(window=window).mean()
+        rolling_std = prices.rolling(window=window).std()
+        
+        upper_band = rolling_mean + (rolling_std * std_dev)
+        lower_band = rolling_mean - (rolling_std * std_dev)
+        
+        return pd.DataFrame({
+            'middle_band': rolling_mean,
+            'upper_band': upper_band,
+            'lower_band': lower_band
+        })
+
+    def generate_trading_signals(self, symbol: str = 'SPY') -> pd.DataFrame:
         """
-        Generate trading signals based on RSI + Mean Reversion
-        Following assignment requirement for technical indicators
+        Generate trading signals based on Bollinger Band crossovers.
         """
-        # Get historical data
         data = self.get_historical_data_from_db(symbol)
         
         if data.empty:
-            logging.warning(f"No data available for {symbol}")
             return pd.DataFrame()
         
-        # Calculate technical indicators
-        data['rsi'] = self.calculate_rsi(data['close'], self.rsi_period)
+        bbands = self.calculate_bollinger_bands(data['close'])
+        data = data.join(bbands)
         
-        z_score, rolling_mean, rolling_std = self.calculate_mean_reversion_signal(
-            data['close'], self.lookback_period, self.mean_reversion_threshold
-        )
-        
-        data['z_score'] = z_score
-        data['rolling_mean'] = rolling_mean
-        data['rolling_std'] = rolling_std
-        
-        # Generate signals
         data['signal'] = 0
-        
-        # BUY Signal: RSI oversold AND price below mean (mean reversion opportunity)
-        buy_condition = (data['rsi'] < self.rsi_oversold) & (data['z_score'] < -self.mean_reversion_threshold)
+        data['prev_close'] = data['close'].shift(1)
+
+        buy_condition = (data['close'] < data['lower_band']) & (data['prev_close'] >= data['lower_band'].shift(1))
         data.loc[buy_condition, 'signal'] = 1
         
-        # SELL Signal: RSI overbought AND price above mean (mean reversion opportunity)
-        sell_condition = (data['rsi'] > self.rsi_overbought) & (data['z_score'] > self.mean_reversion_threshold)
+        sell_condition = (data['close'] > data['upper_band']) & (data['prev_close'] <= data['upper_band'].shift(1))
         data.loc[sell_condition, 'signal'] = -1
-        
-        # Add signal strength
-        data['signal_strength'] = abs(data['z_score']) * (100 - abs(data['rsi'] - 50)) / 50
+
+        exit_long_condition = (data['close'] > data['middle_band']) & (data['prev_close'] <= data['middle_band'].shift(1))
+        exit_short_condition = (data['close'] < data['middle_band']) & (data['prev_close'] >= data['middle_band'].shift(1))
+        data.loc[exit_long_condition | exit_short_condition, 'signal'] = 2
         
         return data
     
-    def backtest_strategy(self, symbol='SPY', initial_capital=10000):
-        """
-        4. BACKTESTING (Assignment Step 7.4)
-        Backtest the trading strategy using historical data
-        """
-        logging.info(f"Starting backtest for {symbol}")
-        
-        # Get signals
+    def backtest_strategy(self, symbol: str = 'SPY', initial_capital: float = 100000) -> Dict:
         data = self.generate_trading_signals(symbol)
         
         if data.empty:
-            logging.error("No data available for backtesting")
             return {}
         
-        # Initialize backtesting variables
         capital = initial_capital
-        position = 0  # 0: no position, 1: long, -1: short
+        position = 0
         position_size = 0
         entry_price = 0
         trades = []
         equity_curve = []
+        daily_returns = []
         
         for i, (timestamp, row) in enumerate(data.iterrows()):
             current_price = row['close']
             signal = row['signal']
             
-            # Calculate current portfolio value
-            if position != 0:
-                unrealized_pnl = (current_price - entry_price) * position * position_size
-                current_equity = capital + unrealized_pnl
-            else:
-                current_equity = capital
+            current_equity = capital + (position_size * (current_price - entry_price) if position != 0 else 0)
+            equity_curve.append({'timestamp': timestamp, 'equity': current_equity})
+
+            if i > 0:
+                prev_equity = equity_curve[i-1]['equity']
+                daily_return = (current_equity - prev_equity) / prev_equity if prev_equity != 0 else 0
+                daily_returns.append(daily_return)
+
+            if signal == 2 and position != 0:
+                pnl = (current_price - entry_price) * position_size * position
+                capital += pnl
+                trades.append({'exit_date': timestamp, 'pnl': pnl})
+                position = 0
+                position_size = 0
+
+            elif signal == 1 and position == 0:
+                position_size = (capital * self.risk_parameters['max_position_size']) / current_price
+                entry_price = current_price
+                position = 1
+                trades.append({'entry_date': timestamp, 'price': current_price, 'side': 'buy'})
             
-            equity_curve.append({
-                'timestamp': timestamp,
-                'equity': current_equity,
-                'price': current_price,
-                'rsi': row['rsi'],
-                'z_score': row['z_score'],
-                'signal': signal,
-                'position': position
-            })
-            
-            # Execute trades based on signals
-            if signal == 1 and position <= 0:  # Buy signal
-                if position < 0:  # Close short position first
-                    pnl = (entry_price - current_price) * position_size
-                    capital += pnl
-                    trades.append({
-                        'timestamp': timestamp,
-                        'action': 'cover',
-                        'price': current_price,
-                        'size': position_size,
-                        'pnl': pnl
-                    })
-                
-                # Open long position
-                position_size = min(self.position_size, int(capital / current_price))
-                if position_size > 0:
-                    entry_price = current_price
-                    position = 1
-                    trades.append({
-                        'timestamp': timestamp,
-                        'action': 'buy',
-                        'price': current_price,
-                        'size': position_size,
-                        'pnl': 0
-                    })
-            
-            elif signal == -1 and position >= 0:  # Sell signal
-                if position > 0:  # Close long position first
-                    pnl = (current_price - entry_price) * position_size
-                    capital += pnl
-                    trades.append({
-                        'timestamp': timestamp,
-                        'action': 'sell',
-                        'price': current_price,
-                        'size': position_size,
-                        'pnl': pnl
-                    })
-                
-                # Open short position (if allowed)
-                position_size = min(self.position_size, int(capital / current_price))
-                if position_size > 0:
-                    entry_price = current_price
-                    position = -1
-                    trades.append({
-                        'timestamp': timestamp,
-                        'action': 'short',
-                        'price': current_price,
-                        'size': position_size,
-                        'pnl': 0
-                    })
-        
-        # Calculate final performance metrics
-        if trades:
-            total_trades = len([t for t in trades if t['action'] in ['buy', 'short']])
-            profitable_trades = len([t for t in trades if t['pnl'] > 0])
-            total_pnl = sum([t['pnl'] for t in trades])
-            
-            win_rate = profitable_trades / max(total_trades, 1) if total_trades > 0 else 0
-            final_capital = capital + total_pnl
-            total_return = (final_capital - initial_capital) / initial_capital
-            
-            backtest_results = {
-                'initial_capital': initial_capital,
-                'final_capital': final_capital,
-                'total_return': total_return,
-                'total_trades': total_trades,
-                'profitable_trades': profitable_trades,
-                'win_rate': win_rate,
-                'total_pnl': total_pnl,
-                'trades': trades,
-                'equity_curve': equity_curve
-            }
-            
-            logging.info(f"Backtest completed:")
-            logging.info(f"  Total Return: {total_return:.2%}")
-            logging.info(f"  Total Trades: {total_trades}")
-            logging.info(f"  Win Rate: {win_rate:.2%}")
-            
-            return backtest_results
-        
-        else:
-            logging.warning("No trades generated during backtesting period")
+            elif signal == -1 and position == 0:
+                position_size = (capital * self.risk_parameters['max_position_size']) / current_price
+                entry_price = current_price
+                position = -1
+                trades.append({'entry_date': timestamp, 'price': current_price, 'side': 'sell'})
+
+        if not trades:
             return {'message': 'No trades generated'}
-    
-    def get_current_position(self):
-        """Get current positions from Alpaca paper trading account"""
-        try:
-            positions = self.trading_client.get_all_positions()
-            position_dict = {}
-            for pos in positions:
-                try:
-                    position_dict[str(pos.symbol)] = float(pos.qty)
-                except AttributeError:
-                    logging.warning("Could not access position attributes")
-            return position_dict
-        except Exception as e:
-            logging.error(f"Error getting positions: {e}")
-            return {}
-    
-    def place_paper_trade(self, symbol, side, quantity):
-        """
-        5. PAPER TRADING (Assignment Step 7.5)
-        Place trades in paper trading environment
-        """
-        try:
-            if side.upper() == 'BUY':
-                order_side = OrderSide.BUY
-            else:
-                order_side = OrderSide.SELL
-            
-            # Create market order
-            market_order_data = MarketOrderRequest(
-                symbol=symbol,
-                qty=quantity,
-                side=order_side,
-                time_in_force=TimeInForce.DAY
-            )
-            
-            # Submit order
-            order = self.trading_client.submit_order(market_order_data)
-            
-            logging.info(f"Paper trade placed: {side} {quantity} shares of {symbol}")
-            logging.info(f"Order submitted successfully")
-            
-            return order
-            
-        except Exception as e:
-            logging.error(f"Error placing paper trade: {e}")
-            return None
-    
-    def monitor_strategy_performance(self):
-        """
-        6. REAL-TIME MONITORING (Assignment Step 7.6)
-        Monitor algorithm performance in real-time
-        """
-        try:
-            # Get account information
-            account = self.trading_client.get_account()
-            
-            # Get current positions
-            positions = self.get_current_position()
-            
-            # Get recent orders
-            orders = self.trading_client.get_orders()
-            
-            # Safe attribute access
-            account_equity = getattr(account, 'equity', '0')
-            buying_power = getattr(account, 'buying_power', '0')
-            day_trade_count = getattr(account, 'daytrade_count', '0')
-            
-            performance_data = {
-                'timestamp': datetime.now(),
-                'account_equity': float(account_equity) if account_equity else 0.0,
-                'buying_power': float(buying_power) if buying_power else 0.0,
-                'day_trade_count': int(day_trade_count) if day_trade_count else 0,
-                'positions': positions,
-                'recent_orders': len(orders) if orders else 0
-            }
-            
-            logging.info("Strategy Performance Monitor:")
-            logging.info(f"  Account Equity: ${performance_data['account_equity']:,.2f}")
-            logging.info(f"  Buying Power: ${performance_data['buying_power']:,.2f}")
-            logging.info(f"  Active Positions: {len(positions)}")
-            
-            return performance_data
-            
-        except Exception as e:
-            logging.error(f"Error monitoring performance: {e}")
-            return {
-                'timestamp': datetime.now(),
-                'account_equity': 0.0,
-                'buying_power': 0.0,
-                'day_trade_count': 0,
-                'positions': {},
-                'recent_orders': 0,
-                'error': str(e)
-            }
-    
-    def run_strategy_analysis(self):
-        """Run complete strategy analysis following assignment steps"""
-        logging.info("=" * 60)
-        logging.info("STEP 7: TRADING STRATEGY ANALYSIS")
-        logging.info("=" * 60)
-        
-        # 1. Trading Goals (already defined in __init__)
-        logging.info("1. TRADING GOALS:")
-        for key, value in self.trading_goals.items():
-            logging.info(f"   {key.replace('_', ' ').title()}: {value}")
-        
-        # 2. Trading Instruments
-        logging.info(f"\n2. SELECTED TRADING INSTRUMENTS: {self.trading_instruments}")
-        
-        # 3. Technical Indicators (RSI + Mean Reversion)
-        logging.info("\n3. TECHNICAL INDICATORS:")
-        logging.info(f"   RSI Period: {self.rsi_period}")
-        logging.info(f"   RSI Oversold/Overbought: {self.rsi_oversold}/{self.rsi_overbought}")
-        logging.info(f"   Mean Reversion Period: {self.lookback_period}")
-        logging.info(f"   Mean Reversion Threshold: {self.mean_reversion_threshold} std devs")
-        
-        # 4. Backtesting
-        logging.info("\n4. BACKTESTING RESULTS:")
-        backtest_results = self.backtest_strategy(self.primary_symbol)
-        
-        # 5. Paper Trading Status
-        logging.info("\n5. PAPER TRADING STATUS:")
-        performance = self.monitor_strategy_performance()
-        
+
+        completed_trades = [t for t in trades if 'exit_date' in t]
+        total_trades = len(completed_trades)
+        profitable_trades = len([t for t in completed_trades if 'pnl' in t and t['pnl'] > 0])
+        win_rate = profitable_trades / total_trades if total_trades > 0 else 0
+        total_return = (equity_curve[-1]['equity'] - initial_capital) / initial_capital
+
+        equity_df = pd.DataFrame(equity_curve).set_index('timestamp')
+        running_max = equity_df['equity'].cummax()
+        drawdown = (equity_df['equity'] - running_max) / running_max
+        max_drawdown = drawdown.min()
+
+        sharpe_ratio = np.mean(daily_returns) / np.std(daily_returns) * np.sqrt(252) if np.std(daily_returns) > 0 else 0
+
         return {
-            'trading_goals': self.trading_goals,
-            'instruments': self.trading_instruments,
-            'backtest_results': backtest_results,
-            'current_performance': performance
+            'symbol': symbol,
+            'total_return': total_return,
+            'total_trades': total_trades,
+            'win_rate': win_rate,
+            'max_drawdown': max_drawdown,
+            'sharpe_ratio': sharpe_ratio,
+            'equity_curve': equity_curve,
+            'daily_returns': daily_returns
+        }
+    
+    def run_comprehensive_backtest(self, symbols: List[str] = None, initial_capital: float = 100000) -> Dict:
+        if symbols is None:
+            symbols = self._get_available_symbols_from_db()
+        
+        individual_results = {}
+        for symbol in symbols:
+            symbol_capital = initial_capital / len(symbols) if len(symbols) > 0 else initial_capital
+            result = self.backtest_strategy(symbol, symbol_capital)
+            if result and 'total_return' in result:
+                individual_results[symbol] = result
+        
+        successful_results = [r for r in individual_results.values() if r and 'total_return' in r]
+        
+        if successful_results:
+            portfolio_metrics = {
+                'avg_return': np.mean([r['total_return'] for r in successful_results]),
+                'avg_win_rate': np.mean([r['win_rate'] for r in successful_results]),
+                'avg_sharpe': np.mean([r['sharpe_ratio'] for r in successful_results]),
+                'avg_drawdown': np.mean([r['max_drawdown'] for r in successful_results]),
+            }
+        else:
+            portfolio_metrics = {}
+
+        return {
+            'individual_results': individual_results,
+            'portfolio_metrics': portfolio_metrics
         }
 
-def main():
-    """Main function to run Step 7 trading strategy analysis"""
-    strategy = RSIMeanReversionStrategy()
-    results = strategy.run_strategy_analysis()
-    
-    print("\n" + "="*60)
-    print("STEP 7: TRADING STRATEGY IMPLEMENTATION COMPLETE")
-    print("="*60)
-    
-    if 'backtest_results' in results and 'total_return' in results['backtest_results']:
-        print(f"Backtest Total Return: {results['backtest_results']['total_return']:.2%}")
-        print(f"Win Rate: {results['backtest_results']['win_rate']:.2%}")
-        print(f"Total Trades: {results['backtest_results']['total_trades']}")
-
 if __name__ == "__main__":
-    main()
+    strategy = BollingerBandMeanReversionStrategy()
+    results = strategy.run_comprehensive_backtest()
+    
+    print("\n" + "="*80)
+    print("COMPREHENSIVE BACKTEST COMPLETE")
+    print("="*80)
+    
+    if results['portfolio_metrics']:
+        metrics = results['portfolio_metrics']
+        print(f"Portfolio Average Return: {metrics.get('avg_return', 0):.2%}")
+        print(f"Portfolio Average Win Rate: {metrics.get('avg_win_rate', 0):.2%}")
+        print(f"Portfolio Average Sharpe Ratio: {metrics.get('avg_sharpe', 0):.2f}")
+        print(f"Portfolio Average Max Drawdown: {metrics.get('avg_drawdown', 0):.2%}")

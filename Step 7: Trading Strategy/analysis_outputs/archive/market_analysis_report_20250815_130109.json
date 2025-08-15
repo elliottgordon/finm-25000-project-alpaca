@@ -1,0 +1,86 @@
+{
+  "analysis_date": "2025-08-15T13:01:09.372031",
+  "symbols_analyzed": [
+    "AAPL",
+    "ABBV"
+  ],
+  "date_range": {
+    "start": "2025-08-01",
+    "end": null
+  },
+  "individual_analysis": {
+    "AAPL": {
+      "symbol": "AAPL",
+      "total_days": 10,
+      "date_range": {
+        "start": "2025-08-01",
+        "end": "2025-08-14"
+      },
+      "price_stats": {
+        "current_price": 232.78,
+        "highest_price": 235.12,
+        "lowest_price": 201.27,
+        "avg_price": 219.27800000000002,
+        "price_change": 30.629999999999995,
+        "price_change_pct": 15.152114766262681
+      },
+      "volume_stats": {
+        "avg_volume": 77553513.0,
+        "max_volume": "113853967",
+        "volume_trend": "Decreasing"
+      },
+      "volatility_stats": {
+        "avg_daily_return": 0.01599355888673563,
+        "volatility": 0.33545213061679224,
+        "sharpe_ratio": 12.01475999585028,
+        "max_drawdown": -0.8337334671962969
+      },
+      "technical_indicators": {
+        "current_rsi": NaN,
+        "rsi_status": "Neutral",
+        "ma_trend": "Mixed"
+      }
+    },
+    "ABBV": {
+      "symbol": "ABBV",
+      "total_days": 10,
+      "date_range": {
+        "start": "2025-08-01",
+        "end": "2025-08-14"
+      },
+      "price_stats": {
+        "current_price": 204.68,
+        "highest_price": 205.06,
+        "lowest_price": 189.785,
+        "avg_price": 198.76000000000002,
+        "price_change": 9.460000000000008,
+        "price_change_pct": 4.8458149779735615
+      },
+      "volume_stats": {
+        "avg_volume": 4660772.9,
+        "max_volume": "8081951",
+        "volume_trend": "Decreasing"
+      },
+      "volatility_stats": {
+        "avg_daily_return": 0.0053091984712198125,
+        "volatility": 0.1459785581219188,
+        "sharpe_ratio": 9.16516803536302,
+        "max_drawdown": -1.1332158146562579
+      },
+      "technical_indicators": {
+        "current_rsi": NaN,
+        "rsi_status": "Neutral",
+        "ma_trend": "Mixed"
+      }
+    }
+  },
+  "portfolio_analysis": {
+    "total_return": 0.09972003281460151,
+    "annualized_return": 13.318575638867582,
+    "volatility": 0.13889516022205786,
+    "sharpe_ratio": 19.324988882342048,
+    "max_drawdown": -0.26791444882159277,
+    "var_95": -0.0006515014372275307,
+    "cvar_95": -0.002679144488215879
+  }
+}

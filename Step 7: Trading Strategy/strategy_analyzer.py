@@ -1,14 +1,18 @@
 # Step 7: Trading Strategy Analysis and Visualization
-# Comprehensive analysis of RSI + Mean Reversion Strategy
+# Comprehensive analysis of RSI + Mean Reversion Strategy with Professional Backtesting
 
 import os
 import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from matplotlib.ticker import FuncFormatter
 import sqlite3
 from datetime import datetime, timedelta
+import logging
+from typing import Dict, List, Tuple, Optional
+import json
 
 # Add parent directory to path
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -16,376 +20,263 @@ PARENT_DIR = os.path.dirname(CURRENT_DIR)
 if PARENT_DIR not in sys.path:
     sys.path.insert(0, PARENT_DIR)
 
-# Import our strategy
-from trading_strategy import RSIMeanReversionStrategy
+# Import our strategy from the existing trading_strategy.py file
+try:
+    from trading_strategy import BollingerBandMeanReversionStrategy
+except ImportError:
+    print("Error: Could not import BollingerBandMeanReversionStrategy. Make sure trading_strategy.py is in the parent directory.")
+    sys.exit(1)
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class StrategyAnalyzer:
     """
-    Comprehensive analysis and visualization of the RSI Mean Reversion Strategy
-    Following Step 7 assignment requirements with detailed analysis
+    Analyzes and visualizes the performance of a trading strategy.
+    Can run analysis on a single asset or a full portfolio.
     """
     
-    def __init__(self):
-        self.strategy = RSIMeanReversionStrategy()
-        
-    def get_full_historical_data(self, symbol='SPY', years=2):
-        """Get more historical data for comprehensive analysis"""
+    def __init__(self, output_dir: str = 'analysis_outputs'):
+        """Initializes the StrategyAnalyzer."""
+        self.strategy = BollingerBandMeanReversionStrategy()
+        self.analysis_dir = output_dir
+        self._setup_environment()
+        logging.info("StrategyAnalyzer initialized.")
+
+    def _setup_environment(self):
+        """Sets up the analysis directory and plotting styles."""
+        if not os.path.exists(self.analysis_dir):
+            os.makedirs(self.analysis_dir)
+        plt.style.use('seaborn-v0_8-whitegrid')
+        sns.set_palette("viridis")
+
+    def _get_db_connection(self) -> Optional[sqlite3.Connection]:
+        """Establishes and returns a connection to the market data database."""
         try:
-            # --- FIX STARTS HERE ---
-            # Construct a reliable path to the database file
             db_path = os.path.join(PARENT_DIR, 'Step 5: Saving Market Data', 'market_data.db')
-            # --- FIX ENDS HERE ---
-            
-            conn = sqlite3.connect(db_path)
-            
-            # Get last 2 years of data for better analysis
-            end_date = datetime.now()
-            start_date = end_date - timedelta(days=years*365)
-            
-            query = """
-                SELECT timestamp, close, high, low, open, volume
-                FROM market_data 
-                WHERE symbol = ? 
-                AND date(timestamp) >= ? 
-                AND date(timestamp) <= ?
-                ORDER BY timestamp ASC
-            """
-            
-            df = pd.read_sql_query(query, conn, params=[
-                symbol, 
-                start_date.strftime('%Y-%m-%d'), 
-                end_date.strftime('%Y-%m-%d')
-            ])
-            conn.close()
-            
-            if not df.empty:
-                # Handle timestamp parsing more robustly
-                df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-                df = df.dropna(subset=['timestamp'])
-                df.set_index('timestamp', inplace=True)
-                
-                print(f"✅ Retrieved {len(df)} records for {symbol}")
-                print(f"📅 Date range: {df.index.min()} to {df.index.max()}")
-            
-            return df
-            
-        except Exception as e:
-            print(f"❌ Error retrieving data: {e}")
-            return pd.DataFrame()
-    
-    def analyze_strategy_performance(self, symbol='SPY'):
-        """Comprehensive strategy performance analysis"""
-        print("=" * 80)
-        print("STEP 7: COMPREHENSIVE TRADING STRATEGY ANALYSIS")
-        print("=" * 80)
-        
-        # Get historical data
-        data = self.get_full_historical_data(symbol)
-        
-        if data.empty:
-            print("❌ No data available for analysis")
+            return sqlite3.connect(db_path)
+        except sqlite3.Error as e:
+            logging.error(f"Database connection error: {e}")
             return None
+
+    def get_all_assets_from_db(self) -> List[str]:
+        """Gets all unique assets available in the market_data database."""
+        conn = self._get_db_connection()
+        if not conn:
+            return []
+        try:
+            query = "SELECT DISTINCT symbol FROM market_data ORDER BY symbol"
+            db_symbols = pd.read_sql_query(query, conn)['symbol'].tolist()
+            logging.info(f"Found {len(db_symbols)} unique assets in the database.")
+            return db_symbols
+        finally:
+            conn.close()
+
+    def _calculate_performance_metrics(self, daily_returns: pd.Series) -> Dict:
+        """Calculates key performance metrics from a series of daily returns."""
+        if daily_returns.empty or daily_returns.std() == 0:
+            return {'return': 0, 'volatility': 0, 'sharpe': 0}
             
-        # Calculate technical indicators
-        print(f"\n📊 Calculating Technical Indicators for {symbol}...")
+        cumulative_return = (1 + daily_returns).prod()
+        trading_days = len(daily_returns)
+        years = trading_days / 252.0
+        annualized_return = (cumulative_return ** (1/years)) - 1 if years > 0 else 0
+        annualized_volatility = daily_returns.std() * np.sqrt(252)
+        sharpe_ratio = (daily_returns.mean() * 252) / annualized_volatility if annualized_volatility > 0 else 0
         
-        # RSI Calculation
-        data['rsi'] = self.strategy.calculate_rsi(data['close'])
+        return {
+            'return': annualized_return,
+            'volatility': annualized_volatility,
+            'sharpe': sharpe_ratio
+        }
+
+    def run_single_asset_analysis(self, symbol: str):
+        """Runs a backtest for a single asset and visualizes the results."""
+        print("\n" + "="*80)
+        print(f"🔬 Analyzing Strategy Performance for: {symbol}")
+        print("="*80)
         
-        # Mean Reversion Calculation  
-        z_score, rolling_mean, rolling_std = self.strategy.calculate_mean_reversion_signal(
-            data['close'], self.strategy.lookback_period, self.strategy.mean_reversion_threshold
-        )
-        data['z_score'] = z_score
-        data['rolling_mean'] = rolling_mean
-        data['rolling_std'] = rolling_std
+        results = self.strategy.backtest_strategy(symbol)
         
-        # Generate signals
-        print("📡 Generating Trading Signals...")
-        data['signal'] = 0
-        
-        # BUY signals: RSI oversold AND price significantly below mean
-        buy_condition = (data['rsi'] < self.strategy.rsi_oversold) & (data['z_score'] < -self.strategy.mean_reversion_threshold)
-        data.loc[buy_condition, 'signal'] = 1
-        
-        # SELL signals: RSI overbought AND price significantly above mean
-        sell_condition = (data['rsi'] > self.strategy.rsi_overbought) & (data['z_score'] > self.strategy.mean_reversion_threshold)
-        data.loc[sell_condition, 'signal'] = -1
-        
-        # Calculate signal statistics
-        total_signals = (data['signal'] != 0).sum()
-        buy_signals = (data['signal'] == 1).sum()
-        sell_signals = (data['signal'] == -1).sum()
-        
-        print(f"📈 Signal Statistics:")
-        print(f"   Total Signals: {total_signals}")
-        print(f"   Buy Signals: {buy_signals}")
-        print(f"   Sell Signals: {sell_signals}")
-        
-        # Run backtesting with the full dataset
-        print(f"\n🔄 Running Backtesting Analysis...")
-        backtest_results = self.run_custom_backtest(data)
-        
-        return data, backtest_results
-    
-    def run_custom_backtest(self, data, initial_capital=10000):
-        """Custom backtesting with detailed analysis"""
-        if data.empty:
-            return {}
-        
-        # Initialize variables
-        capital = initial_capital
-        position = 0  # 0: no position, 1: long, -1: short
-        position_size = 0
-        entry_price = 0
-        trades = []
-        equity_curve = []
-        max_equity = initial_capital
-        max_drawdown = 0
-        
-        print(f"📊 Backtesting from {data.index[0].date()} to {data.index[-1].date()}")
-        
-        for timestamp, row in data.iterrows():
-            current_price = row['close']
-            signal = row['signal']
-            
-            # Calculate current equity
-            if position != 0:
-                unrealized_pnl = (current_price - entry_price) * position * position_size
-                current_equity = capital + unrealized_pnl
-            else:
-                current_equity = capital
-            
-            # Track drawdown
-            if current_equity > max_equity:
-                max_equity = current_equity
-            current_drawdown = (max_equity - current_equity) / max_equity
-            if current_drawdown > max_drawdown:
-                max_drawdown = current_drawdown
-            
-            equity_curve.append({
-                'timestamp': timestamp,
-                'equity': current_equity,
-                'price': current_price,
-                'rsi': row['rsi'],
-                'z_score': row['z_score'],
-                'signal': signal,
-                'position': position
-            })
-            
-            # Execute trades
-            if signal == 1 and position <= 0:  # Buy signal
-                if position < 0:  # Close short first
-                    pnl = (entry_price - current_price) * position_size
-                    capital += pnl
-                    trades.append({
-                        'timestamp': timestamp,
-                        'action': 'cover',
-                        'price': current_price,
-                        'size': position_size,
-                        'pnl': pnl,
-                        'rsi': row['rsi'],
-                        'z_score': row['z_score']
-                    })
-                
-                # Open long position
-                position_size = min(100, int(capital / current_price))
-                if position_size > 0:
-                    entry_price = current_price
-                    position = 1
-                    trades.append({
-                        'timestamp': timestamp,
-                        'action': 'buy',
-                        'price': current_price,
-                        'size': position_size,
-                        'pnl': 0,
-                        'rsi': row['rsi'],
-                        'z_score': row['z_score']
-                    })
-            
-            elif signal == -1 and position >= 0:  # Sell signal
-                if position > 0:  # Close long first
-                    pnl = (current_price - entry_price) * position_size
-                    capital += pnl
-                    trades.append({
-                        'timestamp': timestamp,
-                        'action': 'sell',
-                        'price': current_price,
-                        'size': position_size,
-                        'pnl': pnl,
-                        'rsi': row['rsi'],
-                        'z_score': row['z_score']
-                    })
-                    position = 0
-                    position_size = 0
-        
-        # Calculate performance metrics
-        if trades:
-            total_trades = len([t for t in trades if t['action'] in ['buy', 'short']])
-            profitable_trades = len([t for t in trades if t['pnl'] > 0])
-            losing_trades = len([t for t in trades if t['pnl'] < 0])
-            total_pnl = sum([t['pnl'] for t in trades])
-            
-            if profitable_trades > 0:
-                avg_win = sum([t['pnl'] for t in trades if t['pnl'] > 0]) / profitable_trades
-            else:
-                avg_win = 0
-                
-            if losing_trades > 0:
-                avg_loss = sum([t['pnl'] for t in trades if t['pnl'] < 0]) / losing_trades
-            else:
-                avg_loss = 0
-            
-            win_rate = profitable_trades / max(total_trades, 1)
-            final_capital = capital + total_pnl
-            total_return = (final_capital - initial_capital) / initial_capital
-            
-            # Calculate Sharpe ratio (simplified)
-            if len(equity_curve) > 1:
-                returns = pd.Series([eq['equity'] for eq in equity_curve]).pct_change().dropna()
-                sharpe_ratio = returns.mean() / returns.std() * np.sqrt(252) if returns.std() > 0 else 0
-            else:
-                sharpe_ratio = 0
-            
-            results = {
-                'initial_capital': initial_capital,
-                'final_capital': final_capital,
-                'total_return': total_return,
-                'total_trades': total_trades,
-                'profitable_trades': profitable_trades,
-                'losing_trades': losing_trades,
-                'win_rate': win_rate,
-                'avg_win': avg_win,
-                'avg_loss': avg_loss,
-                'total_pnl': total_pnl,
-                'max_drawdown': max_drawdown,
-                'sharpe_ratio': sharpe_ratio,
-                'trades': trades,
-                'equity_curve': equity_curve
-            }
-            
-            # Print results
-            print(f"\n🎯 BACKTESTING RESULTS:")
-            print(f"   Initial Capital: ${initial_capital:,.2f}")
-            print(f"   Final Capital: ${final_capital:,.2f}")
-            print(f"   Total Return: {total_return:.2%}")
-            print(f"   Total Trades: {total_trades}")
-            print(f"   Win Rate: {win_rate:.2%}")
-            print(f"   Average Win: ${avg_win:.2f}")
-            print(f"   Average Loss: ${avg_loss:.2f}")
-            print(f"   Max Drawdown: {max_drawdown:.2%}")
-            print(f"   Sharpe Ratio: {sharpe_ratio:.2f}")
-            
-            return results
-        else:
-            print("⚠️  No trades generated in backtesting period")
-            return {'message': 'No trades generated'}
-    
-    def create_strategy_visualization(self, data, backtest_results, symbol='SPY'):
-        """Create comprehensive strategy visualization"""
-        if data.empty:
+        if not results or 'total_return' not in results:
+            logging.error(f"Backtest for {symbol} failed or generated no trades.")
             return
+
+        equity_curve_df = pd.DataFrame(results['equity_curve']).set_index('timestamp')
+        equity_curve = (equity_curve_df['equity'] / equity_curve_df['equity'].iloc[0]) * 100
         
-        print(f"\n📈 Creating Strategy Visualization for {symbol}...")
-        
-        fig, axes = plt.subplots(4, 1, figsize=(15, 12))
-        fig.suptitle(f'RSI + Mean Reversion Strategy Analysis - {symbol}', fontsize=16, fontweight='bold')
-        
-        # 1. Price and signals
-        ax1 = axes[0]
-        ax1.plot(data.index, data['close'], label='Close Price', linewidth=1)
-        ax1.plot(data.index, data['rolling_mean'], label='20-Day Mean', alpha=0.7)
-        
-        # Mark buy/sell signals
-        buy_signals = data[data['signal'] == 1]
-        sell_signals = data[data['signal'] == -1]
-        
-        ax1.scatter(buy_signals.index, buy_signals['close'], color='green', marker='^', s=100, label='Buy Signal', zorder=5)
-        ax1.scatter(sell_signals.index, sell_signals['close'], color='red', marker='v', s=100, label='Sell Signal', zorder=5)
-        
-        ax1.set_title('Price Action with Trading Signals')
-        ax1.legend()
-        ax1.grid(True, alpha=0.3)
-        
-        # 2. RSI
-        ax2 = axes[1]
-        ax2.plot(data.index, data['rsi'], label='RSI', color='purple')
-        ax2.axhline(y=70, color='r', linestyle='--', alpha=0.7, label='Overbought (70)')
-        ax2.axhline(y=30, color='g', linestyle='--', alpha=0.7, label='Oversold (30)')
-        ax2.axhline(y=50, color='gray', linestyle='-', alpha=0.5, label='Neutral (50)')
-        ax2.fill_between(data.index, 30, 70, alpha=0.1, color='gray')
-        ax2.set_title('RSI (14-period)')
-        ax2.set_ylabel('RSI')
-        ax2.legend()
-        ax2.grid(True, alpha=0.3)
-        ax2.set_ylim(0, 100)
-        
-        # 3. Z-Score (Mean Reversion)
-        ax3 = axes[2]
-        ax3.plot(data.index, data['z_score'], label='Z-Score', color='orange')
-        ax3.axhline(y=2, color='r', linestyle='--', alpha=0.7, label='Upper Threshold (+2σ)')
-        ax3.axhline(y=-2, color='g', linestyle='--', alpha=0.7, label='Lower Threshold (-2σ)')
-        ax3.axhline(y=0, color='gray', linestyle='-', alpha=0.5)
-        ax3.fill_between(data.index, -2, 2, alpha=0.1, color='gray')
-        ax3.set_title('Mean Reversion Z-Score (20-period)')
-        ax3.set_ylabel('Z-Score')
-        ax3.legend()
-        ax3.grid(True, alpha=0.3)
-        
-        # 4. Equity curve
-        if backtest_results and 'equity_curve' in backtest_results:
-            equity_data = pd.DataFrame(backtest_results['equity_curve'])
-            ax4 = axes[3]
-            ax4.plot(equity_data['timestamp'], equity_data['equity'], label='Strategy Equity', color='blue', linewidth=2)
-            ax4.axhline(y=backtest_results['initial_capital'], color='gray', linestyle='--', alpha=0.7, label='Initial Capital')
-            ax4.set_title('Strategy Equity Curve')
-            ax4.set_ylabel('Portfolio Value ($)')
-            ax4.legend()
-            ax4.grid(True, alpha=0.3)
+        daily_returns = pd.Series(results['daily_returns'], index=equity_curve_df.index[1:])
+        strategy_metrics = self._calculate_performance_metrics(daily_returns)
+
+        spy_data = self.strategy.get_historical_data_from_db('SPY')
+        benchmark_equity = None
+        benchmark_metrics = None
+        if not spy_data.empty:
+            spy_data.index = pd.to_datetime(spy_data.index)
+            equity_curve.index = pd.to_datetime(equity_curve.index)
             
-            # Format y-axis as currency
-            ax4.yaxis.set_major_formatter(FuncFormatter(lambda x, p: f'${x:,.0f}'))
+            common_dates = equity_curve.index.intersection(spy_data.index)
+            equity_curve = equity_curve.loc[common_dates]
+            spy_data = spy_data.loc[common_dates]
+
+            benchmark_equity = (spy_data['close'] / spy_data['close'].iloc[0]) * 100
+            benchmark_daily_returns = spy_data['close'].pct_change().fillna(0)
+            benchmark_metrics = self._calculate_performance_metrics(benchmark_daily_returns)
+            
+        self.create_single_asset_visualization(symbol, equity_curve, benchmark_equity, strategy_metrics, benchmark_metrics)
+
+    def create_single_asset_visualization(self, symbol: str, equity_curve: pd.Series, benchmark_equity: Optional[pd.Series], strategy_metrics: Dict, benchmark_metrics: Optional[Dict]):
+        """Generates and saves a visualization for a single asset backtest."""
+        fig, ax = plt.subplots(figsize=(16, 8))
         
+        ax.plot(equity_curve.index, equity_curve, label=f'{symbol} Strategy Equity', color='navy', linewidth=2)
+        if benchmark_equity is not None:
+            ax.plot(benchmark_equity.index, benchmark_equity, label='SPY Benchmark', color='grey', linestyle='--', linewidth=2)
+        
+        ax.set_title(f'{symbol} Performance vs. SPY Benchmark', fontsize=18, fontweight='bold')
+        ax.set_ylabel('Normalized Growth (Initial = 100)')
+        ax.legend(loc='upper left')
+        ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+
+        stats_text = "--- Performance ---\n\n"
+        stats_text += f"{symbol} Strategy:\n"
+        stats_text += f"  Annualized Return: {strategy_metrics['return']:.2%}\n"
+        stats_text += f"  Annualized Volatility: {strategy_metrics['volatility']:.2%}\n"
+        stats_text += f"  Sharpe Ratio: {strategy_metrics['sharpe']:.2f}\n"
+        if benchmark_metrics:
+            stats_text += "\nSPY Benchmark:\n"
+            stats_text += f"  Annualized Return: {benchmark_metrics['return']:.2%}\n"
+            stats_text += f"  Annualized Volatility: {benchmark_metrics['volatility']:.2%}\n"
+            stats_text += f"  Sharpe Ratio: {benchmark_metrics['sharpe']:.2f}"
+
+        ax.text(0.02, 0.95, stats_text, transform=ax.transAxes, fontsize=12,
+                verticalalignment='top', bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.8))
+
         plt.tight_layout()
-        
-        # Save the plot
-        filename = f'strategy_analysis_{symbol}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'
-        plt.savefig(filename, dpi=300, bbox_inches='tight')
-        print(f"📊 Strategy visualization saved as: {filename}")
-        
+        self._save_plot(f'analysis_{symbol}')
         plt.show()
 
+    def run_portfolio_analysis(self):
+        """Runs a backtest across all available assets and visualizes the results."""
+        print("\n" + "="*80)
+        print("🔬 Analyzing Strategy Performance for Full Portfolio")
+        print("="*80)
+        
+        symbols_to_test = self.get_all_assets_from_db()
+        if not symbols_to_test:
+            logging.error("No symbols found for portfolio analysis.")
+            return
+
+        portfolio_results = self.strategy.run_comprehensive_backtest(symbols_to_test)
+        if 'portfolio_metrics' not in portfolio_results:
+            logging.error("Portfolio backtest failed.")
+            return
+
+        all_returns = [pd.Series(res['daily_returns'], index=pd.to_datetime(pd.DataFrame(res['equity_curve']).set_index('timestamp').index[1:])) for res in portfolio_results['individual_results'].values() if res and 'daily_returns' in res]
+        if not all_returns:
+            logging.error("No daily returns to analyze.")
+            return
+
+        portfolio_daily_returns = pd.concat(all_returns, axis=1).fillna(0).mean(axis=1)
+        portfolio_equity = (1 + portfolio_daily_returns).cumprod() * 100
+        portfolio_equity.iloc[0] = 100
+        strategy_metrics = self._calculate_performance_metrics(portfolio_daily_returns)
+
+        spy_data = self.strategy.get_historical_data_from_db('SPY')
+        benchmark_equity, benchmark_metrics = None, None
+        if not spy_data.empty:
+            spy_data.index = pd.to_datetime(spy_data.index)
+            common_dates = portfolio_equity.index.intersection(spy_data.index)
+            portfolio_equity, spy_data = portfolio_equity.loc[common_dates], spy_data.loc[common_dates]
+            benchmark_equity = (spy_data['close'] / spy_data['close'].iloc[0]) * 100
+            benchmark_daily_returns = spy_data['close'].pct_change().fillna(0)
+            benchmark_metrics = self._calculate_performance_metrics(benchmark_daily_returns)
+            
+        self.create_portfolio_visualization(portfolio_results, portfolio_equity, benchmark_equity, strategy_metrics, benchmark_metrics)
+
+    def create_portfolio_visualization(self, results: Dict, portfolio_equity: pd.Series, benchmark_equity: Optional[pd.Series], strategy_metrics: Dict, benchmark_metrics: Optional[Dict]):
+        """Generates and saves a visualization summarizing portfolio performance."""
+        df = pd.DataFrame([{'symbol': s, 'return': r['total_return'], 'win_rate': r['win_rate'], 'sharpe': r.get('sharpe_ratio', 0)} for s, r in results['individual_results'].items() if r and 'total_return' in r]).sort_values('return', ascending=False)
+        if df.empty:
+            logging.warning("No valid backtest results to plot.")
+            return
+
+        fig = plt.figure(figsize=(20, 15))
+        gs = fig.add_gridspec(2, 2)
+        fig.suptitle('Portfolio Performance Summary', fontsize=22, fontweight='bold')
+
+        ax1 = fig.add_subplot(gs[0, :])
+        ax1.plot(portfolio_equity.index, portfolio_equity, label='Strategy Equity Curve', color='navy', linewidth=2)
+        if benchmark_equity is not None:
+            ax1.plot(benchmark_equity.index, benchmark_equity, label='SPY Benchmark', color='grey', linestyle='--', linewidth=2)
+        ax1.set_title('Portfolio Growth vs. SPY Benchmark', fontsize=16)
+        ax1.set_ylabel('Normalized Growth (Initial = 100)')
+        ax1.legend(loc='upper left')
+        ax1.grid(True, which='both', linestyle='--', linewidth=0.5)
+
+        stats_text = f"--- Performance ---\n\nStrategy:\n  Annualized Return: {strategy_metrics['return']:.2%}\n  Annualized Volatility: {strategy_metrics['volatility']:.2%}\n  Sharpe Ratio: {strategy_metrics['sharpe']:.2f}\n"
+        if benchmark_metrics:
+            stats_text += f"\nSPY Benchmark:\n  Annualized Return: {benchmark_metrics['return']:.2%}\n  Annualized Volatility: {benchmark_metrics['volatility']:.2%}\n  Sharpe Ratio: {benchmark_metrics['sharpe']:.2f}"
+        ax1.text(0.02, 0.95, stats_text, transform=ax1.transAxes, fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.8))
+
+        ax2 = fig.add_subplot(gs[1, 0])
+        display_df = pd.concat([df.head(15), df.tail(15)]) if len(df) > 30 else df
+        ax2.set_title(f'Total Return by Symbol (Top & Bottom {min(15, len(df))})', fontsize=14)
+        sns.barplot(x='symbol', y='return', data=display_df, ax=ax2, palette='viridis')
+        ax2.set_ylabel('Total Return')
+        ax2.tick_params(axis='x', rotation=45, labelsize=10)
+        ax2.yaxis.set_major_formatter(FuncFormatter(lambda y, _: f'{y:.0%}'))
+
+        ax3 = fig.add_subplot(gs[1, 1])
+        sns.scatterplot(x='win_rate', y='sharpe', size='return', data=df, ax=ax3, sizes=(50, 500), legend=False, alpha=0.7)
+        ax3.set_title('Win Rate vs. Sharpe Ratio', fontsize=14)
+        ax3.set_xlabel('Win Rate')
+        ax3.set_ylabel('Sharpe Ratio')
+        ax3.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{x:.0%}'))
+        for _, row in df.head(10).iterrows():
+            ax3.text(row['win_rate'] * 1.01, row['sharpe'], row['symbol'], fontsize=9)
+
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
+        self._save_plot('analysis_portfolio')
+        plt.show()
+
+    def _save_plot(self, name: str):
+        """Saves the current plot to a file in the analysis directory."""
+        filename = os.path.join(self.analysis_dir, f"{name}_{datetime.now().strftime('%Y%m%d')}.png")
+        try:
+            plt.savefig(filename, dpi=300, bbox_inches='tight')
+            logging.info(f"Plot saved to {filename}")
+        except Exception as e:
+            logging.error(f"Failed to save plot: {e}")
+
 def main():
-    """Main function to run comprehensive Step 7 analysis"""
+    """Main function to run the strategy analysis."""
     analyzer = StrategyAnalyzer()
     
-    print("🚀 Starting Step 7: Trading Strategy Comprehensive Analysis")
-    print("Strategy: RSI + Mean Reversion")
-    print("Assets: SPY (S&P 500 ETF)")
-    
-    # Run analysis
-    result = analyzer.analyze_strategy_performance('SPY')
-    
-    if result is not None:
-        data, backtest_results = result
-    
-    if data is not None and not data.empty:
-        # Create visualizations
-        analyzer.create_strategy_visualization(data, backtest_results, 'SPY')
-        
-        print("\n" + "=" * 80)
-        print("✅ STEP 7: TRADING STRATEGY ANALYSIS COMPLETE")
-        print("=" * 80)
-        print("📋 Summary:")
-        print("   1. ✅ Trading Goals Defined")
-        print("   2. ✅ Trading Instruments Selected (SPY, VXX)")
-        print("   3. ✅ Technical Indicators Implemented (RSI + Mean Reversion)")
-        print("   4. ✅ Backtesting Completed")
-        print("   5. ✅ Paper Trading Integration Ready")
-        print("   6. ✅ Real-time Monitoring Implemented")
-        print("\n📊 Strategy ready for deployment in paper trading environment!")
+    print("\n" + "="*80)
+    print("🔬 Strategy Analyzer")
+    print("="*80)
+    print("Choose an analysis to run:")
+    print("  1. Analyze a single asset")
+    print("  2. Analyze the full portfolio")
+
+    choice = input("Enter your choice (1 or 2): ").strip()
+
+    if choice == '1':
+        symbol = input("Enter the stock symbol to analyze (e.g., AAPL): ").strip().upper()
+        if symbol:
+            analyzer.run_single_asset_analysis(symbol)
+        else:
+            print("Invalid symbol. Exiting.")
+    elif choice == '2':
+        analyzer.run_portfolio_analysis()
     else:
-        print("❌ Analysis could not be completed due to data issues")
+        print("Invalid choice. Please run the script again and enter 1 or 2.")
+
+    print("\n" + "="*80)
+    print("✅ Analysis Complete!")
+    print(f"📊 Check the '{analyzer.analysis_dir}' directory for the chart.")
+    print("="*80)
 
 if __name__ == "__main__":
     main()

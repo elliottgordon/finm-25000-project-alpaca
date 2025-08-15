@@ -1,0 +1,21 @@
+{
+    "symbol": "SPY",
+    "analysis_date": "2025-08-15T17:19:20.774200",
+    "data_range": "2025-01-27 to 2025-08-14",
+    "strategy_params": {
+        "rsi_period": 14,
+        "rsi_oversold": 30,
+        "rsi_overbought": 70,
+        "mean_reversion_lookback": 20,
+        "mean_reversion_threshold": 2.0,
+        "volume_threshold": 1000000,
+        "price_threshold": 5.0
+    },
+    "performance_metrics": {
+        "total_return_pct": 0.6817000000000007,
+        "win_rate_pct": 4.545454545454546,
+        "total_trades": 22,
+        "sharpe_ratio": 1.5881531094182455,
+        "max_drawdown_pct": 0.2877699273955762
+    }
+}
