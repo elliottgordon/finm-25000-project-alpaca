@@ -1,0 +1,89 @@
+2025-08-14 22:41:29,773 - INFO - Starting collection for symbols: ['SPY', 'QQQ', 'IWM', 'DIA', 'VTI', 'VEA', 'VWO', 'EFA', 'EEM', 'XLK', 'XLF', 'XLV', 'XLE', 'XLI', 'XLY', 'XLP', 'XLU', 'XLB', 'XLRE', 'XLC']
+2025-08-14 22:41:29,821 - INFO - Existing symbols in database: 2
+2025-08-14 22:41:29,821 - INFO - Processing batch 1: ['SPY', 'QQQ', 'IWM']
+2025-08-14 22:41:29,821 - INFO - SPY: New symbol, collecting full history
+2025-08-14 22:41:29,822 - INFO - QQQ: New symbol, collecting full history
+2025-08-14 22:41:29,822 - INFO - IWM: New symbol, collecting full history
+2025-08-14 22:41:29,822 - INFO - Requesting data for SPY
+2025-08-14 22:41:30,072 - INFO - ✅ SPY: 655 records
+2025-08-14 22:41:30,277 - INFO - Requesting data for QQQ
+2025-08-14 22:41:30,380 - INFO - ✅ QQQ: 655 records
+2025-08-14 22:41:30,585 - INFO - Requesting data for IWM
+2025-08-14 22:41:30,679 - INFO - ✅ IWM: 655 records
+2025-08-14 22:41:30,888 - INFO - Total records retrieved: 1965
+2025-08-14 22:41:30,912 - ERROR - ❌ Batch failed: (sqlite3.IntegrityError) UNIQUE constraint failed: market_data.symbol, market_data.timestamp, market_data.timeframe
+[SQL: INSERT INTO market_data (symbol, timestamp, open, high, low, close, volume, trade_count, vwap) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: [('SPY', '2023-01-03 05:00:00.000000', 371.56, 373.55, 365.24, 368.13, 74850731.0, 590240.0, 368.06), ('SPY', '2023-01-04 05:00:00.000000', 370.41, 373.02, 367.34, 370.97, 85934098.0, 632808.0, 370.49), ('SPY', '2023-01-05 05:00:00.000000', 369.0, 369.12, 366.14, 366.74, 76970456.0, 530899.0, 367.37), ('SPY', '2023-01-06 05:00:00.000000', 369.86, 376.28, 366.77, 375.15, 104026233.0, 685781.0, 373.04), ('SPY', '2023-01-09 05:00:00.000000', 377.36, 380.58, 374.75, 374.94, 73978071.0, 549428.0, 377.64), ('SPY', '2023-01-10 05:00:00.000000', 374.35, 377.63, 373.4, 377.57, 65358094.0, 471959.0, 376.08), ('SPY', '2023-01-11 05:00:00.000000', 379.16, 382.42, 378.34, 382.34, 68881080.0, 452704.0, 380.5), ('SPY', '2023-01-12 05:00:00.000000', 383.45, 385.21, 379.34, 383.73, 90157699.0, 665043.0, 383.1)  ... displaying 10 of 1965 total bound parameter sets ...  ('IWM', '2025-08-12 04:00:00.000000', 221.85, 226.975, 221.15, 226.81, 43991900.0, 324918.0, 224.5492), ('IWM', '2025-08-13 04:00:00.000000', 228.26, 231.46, 227.83, 231.22, 41705784.0, 290582.0, 229.646674)]]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-08-14 22:41:30,912 - INFO - Processing batch 2: ['DIA', 'VTI', 'VEA']
+2025-08-14 22:41:30,913 - INFO - DIA: New symbol, collecting full history
+2025-08-14 22:41:30,913 - INFO - VTI: New symbol, collecting full history
+2025-08-14 22:41:30,913 - INFO - VEA: New symbol, collecting full history
+2025-08-14 22:41:30,913 - INFO - Requesting data for DIA
+2025-08-14 22:41:30,994 - INFO - ✅ DIA: 655 records
+2025-08-14 22:41:31,199 - INFO - Requesting data for VTI
+2025-08-14 22:41:31,280 - INFO - ✅ VTI: 655 records
+2025-08-14 22:41:31,485 - INFO - Requesting data for VEA
+2025-08-14 22:41:31,567 - INFO - ✅ VEA: 655 records
+2025-08-14 22:41:31,772 - INFO - Total records retrieved: 1965
+2025-08-14 22:41:31,790 - INFO - ✅ Batch inserted: 1965 records
+2025-08-14 22:41:33,792 - INFO - Processing batch 3: ['VWO', 'EFA', 'EEM']
+2025-08-14 22:41:33,793 - INFO - VWO: New symbol, collecting full history
+2025-08-14 22:41:33,793 - INFO - EFA: New symbol, collecting full history
+2025-08-14 22:41:33,793 - INFO - EEM: New symbol, collecting full history
+2025-08-14 22:41:33,793 - INFO - Requesting data for VWO
+2025-08-14 22:41:33,869 - INFO - ✅ VWO: 655 records
+2025-08-14 22:41:34,074 - INFO - Requesting data for EFA
+2025-08-14 22:41:34,181 - INFO - ✅ EFA: 655 records
+2025-08-14 22:41:34,386 - INFO - Requesting data for EEM
+2025-08-14 22:41:34,457 - INFO - ✅ EEM: 655 records
+2025-08-14 22:41:34,660 - INFO - Total records retrieved: 1965
+2025-08-14 22:41:34,676 - INFO - ✅ Batch inserted: 1965 records
+2025-08-14 22:41:36,680 - INFO - Processing batch 4: ['XLK', 'XLF', 'XLV']
+2025-08-14 22:41:36,681 - INFO - XLK: New symbol, collecting full history
+2025-08-14 22:41:36,681 - INFO - XLF: New symbol, collecting full history
+2025-08-14 22:41:36,681 - INFO - XLV: New symbol, collecting full history
+2025-08-14 22:41:36,681 - INFO - Requesting data for XLK
+2025-08-14 22:41:36,749 - INFO - ✅ XLK: 655 records
+2025-08-14 22:41:36,954 - INFO - Requesting data for XLF
+2025-08-14 22:41:37,032 - INFO - ✅ XLF: 655 records
+2025-08-14 22:41:37,238 - INFO - Requesting data for XLV
+2025-08-14 22:41:37,318 - INFO - ✅ XLV: 655 records
+2025-08-14 22:41:37,523 - INFO - Total records retrieved: 1965
+2025-08-14 22:41:37,539 - INFO - ✅ Batch inserted: 1965 records
+2025-08-14 22:41:39,544 - INFO - Processing batch 5: ['XLE', 'XLI', 'XLY']
+2025-08-14 22:41:39,544 - INFO - XLE: New symbol, collecting full history
+2025-08-14 22:41:39,545 - INFO - XLI: New symbol, collecting full history
+2025-08-14 22:41:39,545 - INFO - XLY: New symbol, collecting full history
+2025-08-14 22:41:39,545 - INFO - Requesting data for XLE
+2025-08-14 22:41:39,642 - INFO - ✅ XLE: 655 records
+2025-08-14 22:41:39,847 - INFO - Requesting data for XLI
+2025-08-14 22:41:39,995 - INFO - ✅ XLI: 655 records
+2025-08-14 22:41:40,200 - INFO - Requesting data for XLY
+2025-08-14 22:41:40,282 - INFO - ✅ XLY: 655 records
+2025-08-14 22:41:40,489 - INFO - Total records retrieved: 1965
+2025-08-14 22:41:40,522 - INFO - ✅ Batch inserted: 1965 records
+2025-08-14 22:41:42,523 - INFO - Processing batch 6: ['XLP', 'XLU', 'XLB']
+2025-08-14 22:41:42,524 - INFO - XLP: New symbol, collecting full history
+2025-08-14 22:41:42,524 - INFO - XLU: New symbol, collecting full history
+2025-08-14 22:41:42,524 - INFO - XLB: New symbol, collecting full history
+2025-08-14 22:41:42,524 - INFO - Requesting data for XLP
+2025-08-14 22:41:42,610 - INFO - ✅ XLP: 655 records
+2025-08-14 22:41:42,811 - INFO - Requesting data for XLU
+2025-08-14 22:41:42,890 - INFO - ✅ XLU: 655 records
+2025-08-14 22:41:43,096 - INFO - Requesting data for XLB
+2025-08-14 22:41:43,165 - INFO - ✅ XLB: 655 records
+2025-08-14 22:41:43,371 - INFO - Total records retrieved: 1965
+2025-08-14 22:41:43,386 - INFO - ✅ Batch inserted: 1965 records
+2025-08-14 22:41:45,392 - INFO - Processing batch 7: ['XLRE', 'XLC']
+2025-08-14 22:41:45,394 - INFO - XLRE: New symbol, collecting full history
+2025-08-14 22:41:45,395 - INFO - XLC: New symbol, collecting full history
+2025-08-14 22:41:45,395 - INFO - Requesting data for XLRE
+2025-08-14 22:41:45,743 - INFO - ✅ XLRE: 655 records
+2025-08-14 22:41:45,948 - INFO - Requesting data for XLC
+2025-08-14 22:41:46,023 - INFO - ✅ XLC: 655 records
+2025-08-14 22:41:46,227 - INFO - Total records retrieved: 1310
+2025-08-14 22:41:46,244 - INFO - ✅ Batch inserted: 1310 records
+2025-08-14 22:41:48,250 - INFO - 🎉 Collection complete!
+2025-08-14 22:41:48,251 - INFO -    Total symbols in database: 19
+2025-08-14 22:41:48,251 - INFO -    Records added this session: 11135

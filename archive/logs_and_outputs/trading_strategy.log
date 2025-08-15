@@ -1,0 +1,138 @@
+2025-08-14 22:28:07,105 - INFO - RSI Mean Reversion Strategy initialized
+2025-08-14 22:28:07,105 - INFO - Trading Goals: {'objective': 'Short-term mean reversion with RSI confirmation', 'risk_tolerance': 'Moderate', 'target_return': 'Consistent small gains with limited downside', 'time_horizon': 'Short-term (1-5 days per trade)'}
+2025-08-14 22:28:07,105 - INFO - Trading Instruments: ['SPY', 'VXX']
+2025-08-14 22:28:07,105 - INFO - ============================================================
+2025-08-14 22:28:07,105 - INFO - STEP 7: TRADING STRATEGY ANALYSIS
+2025-08-14 22:28:07,105 - INFO - ============================================================
+2025-08-14 22:28:07,105 - INFO - 1. TRADING GOALS:
+2025-08-14 22:28:07,105 - INFO -    Objective: Short-term mean reversion with RSI confirmation
+2025-08-14 22:28:07,105 - INFO -    Risk Tolerance: Moderate
+2025-08-14 22:28:07,105 - INFO -    Target Return: Consistent small gains with limited downside
+2025-08-14 22:28:07,105 - INFO -    Time Horizon: Short-term (1-5 days per trade)
+2025-08-14 22:28:07,105 - INFO - 
+2. SELECTED TRADING INSTRUMENTS: ['SPY', 'VXX']
+2025-08-14 22:28:07,105 - INFO - 
+3. TECHNICAL INDICATORS:
+2025-08-14 22:28:07,105 - INFO -    RSI Period: 14
+2025-08-14 22:28:07,105 - INFO -    RSI Oversold/Overbought: 30/70
+2025-08-14 22:28:07,105 - INFO -    Mean Reversion Period: 20
+2025-08-14 22:28:07,106 - INFO -    Mean Reversion Threshold: 2.0 std devs
+2025-08-14 22:28:07,106 - INFO - 
+4. BACKTESTING RESULTS:
+2025-08-14 22:28:07,106 - INFO - Starting backtest for SPY
+2025-08-14 22:28:07,109 - ERROR - Error retrieving historical data: time data "2025-05-06 04:00:00.000000" doesn't match format "%Y-%m-%d %H:%M:%S%z", at position 1. You might want to try:
+    - passing `format` if your strings have a consistent format;
+    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+2025-08-14 22:28:07,110 - WARNING - No data available for SPY
+2025-08-14 22:28:07,110 - ERROR - No data available for backtesting
+2025-08-14 22:28:07,110 - INFO - 
+5. PAPER TRADING STATUS:
+2025-08-14 22:28:07,503 - INFO - Strategy Performance Monitor:
+2025-08-14 22:28:07,503 - INFO -   Account Equity: $1,000,000.00
+2025-08-14 22:28:07,503 - INFO -   Buying Power: $2,000,000.00
+2025-08-14 22:28:07,503 - INFO -   Active Positions: 0
+2025-08-14 22:30:15,959 - INFO - RSI Mean Reversion Strategy initialized
+2025-08-14 22:30:15,959 - INFO - Trading Goals: {'objective': 'Short-term mean reversion with RSI confirmation', 'risk_tolerance': 'Moderate', 'target_return': 'Consistent small gains with limited downside', 'time_horizon': 'Short-term (1-5 days per trade)'}
+2025-08-14 22:30:15,959 - INFO - Trading Instruments: ['SPY', 'VXX']
+2025-08-14 22:45:07,615 - INFO - RSI Mean Reversion Strategy initialized
+2025-08-14 22:45:07,615 - INFO - Trading Goals: {'objective': 'Short-term mean reversion with RSI confirmation', 'risk_tolerance': 'Moderate', 'target_return': 'Consistent small gains with limited downside', 'time_horizon': 'Short-term (1-5 days per trade)'}
+2025-08-14 22:45:07,615 - INFO - Trading Instruments: ['SPY', 'VXX']
+2025-08-14 22:45:07,615 - INFO - Asset Screener initialized
+2025-08-14 22:45:07,629 - INFO - Screening 19 assets for strategy suitability
+2025-08-14 22:45:07,629 - INFO - Analyzing DIA (1/19)
+2025-08-14 22:45:07,638 - INFO - ✅ DIA: Score 90.0
+2025-08-14 22:45:07,639 - INFO - Analyzing EEM (2/19)
+2025-08-14 22:45:07,641 - INFO - ✅ EEM: Score 95.0
+2025-08-14 22:45:07,641 - INFO - Analyzing EFA (3/19)
+2025-08-14 22:45:07,643 - INFO - ✅ EFA: Score 95.0
+2025-08-14 22:45:07,643 - INFO - Analyzing SPY (4/19)
+2025-08-14 22:45:07,646 - ERROR - ❌ SPY: Error - time data "2024-12-05 05:00:00.000000" doesn't match format "%Y-%m-%d %H:%M:%S%z", at position 1. You might want to try:
+    - passing `format` if your strings have a consistent format;
+    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+2025-08-14 22:45:07,646 - INFO - Analyzing VEA (5/19)
+2025-08-14 22:45:07,649 - INFO - ✅ VEA: Score 90.0
+2025-08-14 22:45:07,649 - INFO - Analyzing VTI (6/19)
+2025-08-14 22:45:07,651 - INFO - ✅ VTI: Score 90.0
+2025-08-14 22:45:07,651 - INFO - Analyzing VWO (7/19)
+2025-08-14 22:45:07,653 - INFO - ✅ VWO: Score 95.0
+2025-08-14 22:45:07,653 - INFO - Analyzing VXX (8/19)
+2025-08-14 22:45:07,655 - ERROR - ❌ VXX: Error - time data "2024-12-05 05:00:00.000000" doesn't match format "%Y-%m-%d %H:%M:%S%z", at position 1. You might want to try:
+    - passing `format` if your strings have a consistent format;
+    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+2025-08-14 22:45:07,655 - INFO - Analyzing XLB (9/19)
+2025-08-14 22:45:07,657 - INFO - ✅ XLB: Score 85.0
+2025-08-14 22:45:07,657 - INFO - Analyzing XLC (10/19)
+2025-08-14 22:45:07,659 - INFO - ✅ XLC: Score 90.0
+2025-08-14 22:45:07,659 - INFO - Analyzing XLE (11/19)
+2025-08-14 22:45:07,662 - INFO - ✅ XLE: Score 85.0
+2025-08-14 22:45:07,662 - INFO - Analyzing XLF (12/19)
+2025-08-14 22:45:07,664 - INFO - ✅ XLF: Score 72.5
+2025-08-14 22:45:07,664 - INFO - Analyzing XLI (13/19)
+2025-08-14 22:45:07,667 - INFO - ✅ XLI: Score 95.0
+2025-08-14 22:45:07,667 - INFO - Analyzing XLK (14/19)
+2025-08-14 22:45:07,669 - INFO - ✅ XLK: Score 95.0
+2025-08-14 22:45:07,669 - INFO - Analyzing XLP (15/19)
+2025-08-14 22:45:07,671 - INFO - ✅ XLP: Score 52.5
+2025-08-14 22:45:07,671 - INFO - Analyzing XLRE (16/19)
+2025-08-14 22:45:07,673 - INFO - ✅ XLRE: Score 65.0
+2025-08-14 22:45:07,673 - INFO - Analyzing XLU (17/19)
+2025-08-14 22:45:07,675 - INFO - ✅ XLU: Score 77.5
+2025-08-14 22:45:07,675 - INFO - Analyzing XLV (18/19)
+2025-08-14 22:45:07,677 - INFO - ✅ XLV: Score 80.0
+2025-08-14 22:45:07,677 - INFO - Analyzing XLY (19/19)
+2025-08-14 22:45:07,679 - INFO - ✅ XLY: Score 85.0
+2025-08-14 22:46:44,653 - INFO - RSI Mean Reversion Strategy initialized
+2025-08-14 22:46:44,653 - INFO - Trading Goals: {'objective': 'Short-term mean reversion with RSI confirmation', 'risk_tolerance': 'Moderate', 'target_return': 'Consistent small gains with limited downside', 'time_horizon': 'Short-term (1-5 days per trade)'}
+2025-08-14 22:46:44,653 - INFO - Trading Instruments: ['SPY', 'VXX']
+2025-08-14 22:46:44,653 - INFO - Multi-Asset Portfolio Strategy initialized
+2025-08-14 22:46:44,653 - INFO - Capital: $1,000,000, Max Positions: 8
+2025-08-14 22:46:44,653 - INFO - Position Size: 12.0%, Top Assets: 8
+2025-08-14 22:46:44,654 - INFO - Starting multi-asset backtest from 2023-01-01 to 2024-12-31
+2025-08-14 22:46:47,893 - INFO - Backtest complete. Final value: $1,000,000
+2025-08-14 22:46:47,893 - INFO - Total return: 0.0%
+2025-08-14 22:46:47,893 - INFO - Total trades: 0
+2025-08-14 22:47:29,281 - INFO - RSI Mean Reversion Strategy initialized
+2025-08-14 22:47:29,281 - INFO - Trading Goals: {'objective': 'Short-term mean reversion with RSI confirmation', 'risk_tolerance': 'Moderate', 'target_return': 'Consistent small gains with limited downside', 'time_horizon': 'Short-term (1-5 days per trade)'}
+2025-08-14 22:47:29,281 - INFO - Trading Instruments: ['SPY', 'VXX']
+2025-08-14 22:47:58,305 - INFO - RSI Mean Reversion Strategy initialized
+2025-08-14 22:47:58,305 - INFO - Trading Goals: {'objective': 'Short-term mean reversion with RSI confirmation', 'risk_tolerance': 'Moderate', 'target_return': 'Consistent small gains with limited downside', 'time_horizon': 'Short-term (1-5 days per trade)'}
+2025-08-14 22:47:58,305 - INFO - Trading Instruments: ['SPY', 'VXX']
+2025-08-14 22:47:58,305 - INFO - Multi-Asset Portfolio Strategy initialized
+2025-08-14 22:47:58,305 - INFO - Capital: $1,000,000, Max Positions: 8
+2025-08-14 22:47:58,305 - INFO - Position Size: 12.0%, Top Assets: 8
+2025-08-14 22:47:58,305 - INFO - Starting multi-asset backtest from 2023-01-01 to 2025-08-01
+2025-08-14 22:47:58,635 - INFO - Processing day 50/675: 2023-03-10
+2025-08-14 22:47:58,947 - INFO - Processing day 100/675: 2023-05-19
+2025-08-14 22:47:59,301 - INFO - Processing day 150/675: 2023-07-28
+2025-08-14 22:47:59,828 - INFO - Processing day 200/675: 2023-10-06
+2025-08-14 22:48:00,144 - INFO - Processing day 250/675: 2023-12-15
+2025-08-14 22:48:00,468 - INFO - Processing day 300/675: 2024-02-23
+2025-08-14 22:48:00,779 - INFO - Processing day 350/675: 2024-05-03
+2025-08-14 22:48:01,091 - INFO - Processing day 400/675: 2024-07-12
+2025-08-14 22:48:01,401 - INFO - Processing day 450/675: 2024-09-20
+2025-08-14 22:48:01,713 - INFO - Processing day 500/675: 2024-11-29
+2025-08-14 22:48:02,028 - INFO - Processing day 550/675: 2025-02-07
+2025-08-14 22:48:02,159 - INFO - BUY 354 VTI @ $286.63 (Strength: 34.7)
+2025-08-14 22:48:02,183 - INFO - BUY 371 XLK @ $217.94 (Strength: 25.2)
+2025-08-14 22:48:02,196 - INFO - BUY 609 XLI @ $130.98 (Strength: 31.3)
+2025-08-14 22:48:02,196 - INFO - BUY 162 DIA @ $422.85 (Strength: 27.5)
+2025-08-14 22:48:02,497 - INFO - BUY 784 EFA @ $78.96 (Strength: 27.1)
+2025-08-14 22:48:02,511 - INFO - BUY 2098 VWO @ $42.01 (Strength: 70.9)
+2025-08-14 22:48:02,511 - INFO - BUY 1862 EEM @ $40.20 (Strength: 70.1)
+2025-08-14 22:48:02,511 - INFO - BUY 1375 VEA @ $46.54 (Strength: 70.0)
+2025-08-14 22:48:02,642 - INFO - Processing day 600/675: 2025-04-18
+2025-08-14 22:48:02,899 - INFO - SELL 609 XLI @ $139.88 (Strength: 67.7)
+2025-08-14 22:48:02,899 - INFO - SELL 162 DIA @ $422.54 (Strength: 52.9)
+2025-08-14 22:48:02,913 - INFO - SELL 371 XLK @ $232.24 (Strength: 63.0)
+2025-08-14 22:48:03,043 - INFO - SELL 1375 VEA @ $55.36 (Strength: 33.0)
+2025-08-14 22:48:03,043 - INFO - SELL 784 EFA @ $87.80 (Strength: 30.3)
+2025-08-14 22:48:03,172 - INFO - SELL 1862 EEM @ $47.34 (Strength: 27.4)
+2025-08-14 22:48:03,183 - INFO - SELL 2098 VWO @ $48.98 (Strength: 23.0)
+2025-08-14 22:48:03,280 - INFO - Processing day 650/675: 2025-06-27
+2025-08-14 22:48:03,343 - INFO - SELL 354 VTI @ $308.03 (Strength: 27.0)
+2025-08-14 22:48:03,546 - INFO - Backtest complete. Final value: $1,065,227
+2025-08-14 22:48:03,546 - INFO - Total return: 6.5%
+2025-08-14 22:48:03,546 - INFO - Total trades: 16
