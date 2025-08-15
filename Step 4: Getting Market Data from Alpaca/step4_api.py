@@ -14,7 +14,7 @@ import sys
 import pandas as pd
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest, StockLatestQuoteRequest
-from alpaca.data.enums import Adjustment
+from alpaca.data.enums import Adjustment, DataFeed
 from alpaca.data.timeframe import TimeFrame
 
 # Allow importing step4_config.py from this folder (folder is not a Python package)
@@ -101,6 +101,7 @@ def get_daily_bars(
         start=start,
         end=end,
         adjustment=Adjustment.ALL,
+        feed=DataFeed.IEX,
     )
     resp = _with_simple_backoff(client.get_stock_bars, req)
     return _bars_response_to_df(resp)
@@ -110,3 +111,26 @@ def get_latest_quotes(symbols: Iterable[str]):
     client = make_client()
     req = StockLatestQuoteRequest(symbol_or_symbols=list(symbols))
     return _with_simple_backoff(client.get_stock_latest_quote, req)
+
+
+def get_minute_bars(
+    symbols: Iterable[str],
+    start: datetime,
+    end: datetime,
+) -> pd.DataFrame:
+    """Fetch minute OHLCV bars for one or more symbols.
+
+    Returns a DataFrame with columns including: timestamp, symbol, open, high, low, close, volume
+    """
+    client = make_client()
+    timeframe_obj = cast(TimeFrame, TimeFrame.Minute)
+    req = StockBarsRequest(
+        symbol_or_symbols=list(symbols),
+        timeframe=timeframe_obj,
+        start=start,
+        end=end,
+        adjustment=Adjustment.ALL,
+        feed=DataFeed.IEX,
+    )
+    resp = _with_simple_backoff(client.get_stock_bars, req)
+    return _bars_response_to_df(resp)

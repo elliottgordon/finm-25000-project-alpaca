@@ -17,13 +17,14 @@ PARENT_DIR = os.path.dirname(CURRENT_DIR)
 if PARENT_DIR not in sys.path:
     sys.path.insert(0, PARENT_DIR)
 
-from Alpaca_API import ALPACA_KEY, ALPACA_SECRET
-
-# Import alpaca data client
-from alpaca.data.historical import StockHistoricalDataClient
-from alpaca.data.requests import StockBarsRequest
-from alpaca.data.timeframe import TimeFrame
-from alpaca.data.enums import Adjustment
+# Import API credentials
+try:
+    from Alpaca_API import ALPACA_KEY, ALPACA_SECRET
+except ImportError:
+    # Fallback for development/testing
+    ALPACA_KEY = "test_key"
+    ALPACA_SECRET = "test_secret"
+    logging.warning("Using test credentials - Alpaca_API.py not found")
 
 # Setup logging
 logging.basicConfig(
@@ -44,7 +45,6 @@ class MarketDataManager:
     def __init__(self, db_path='market_data.db', backup_dir='data_backups'):
         self.db_path = db_path
         self.backup_dir = backup_dir
-        self.client = StockHistoricalDataClient(ALPACA_KEY, ALPACA_SECRET)
         self.eastern = pytz.timezone('US/Eastern')
         
         # Create backup directory if it doesn't exist

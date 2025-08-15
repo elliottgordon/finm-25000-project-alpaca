@@ -1,0 +1,28 @@
+{
+  "collection": {
+    "max_retries": 3,
+    "retry_delay": 1,
+    "batch_size": 5,
+    "years_back": 7,
+    "rate_limit_delay": 1,
+    "batch_delay": 5
+  },
+  "scheduling": {
+    "daily_update_time": "16:30",
+    "weekly_full_collection": "Sunday 18:00",
+    "check_interval_minutes": 15
+  },
+  "monitoring": {
+    "enable_email_alerts": false,
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 587,
+    "email_from": "",
+    "email_to": "",
+    "email_password": ""
+  },
+  "data_quality": {
+    "min_records_per_symbol": 1500,
+    "max_data_age_days": 2,
+    "enable_validation": true
+  }
+}

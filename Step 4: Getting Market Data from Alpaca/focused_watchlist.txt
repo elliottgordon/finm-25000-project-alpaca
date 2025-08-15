@@ -1,0 +1,141 @@
+# FOCUSED PRODUCTION WATCHLIST
+# Essential assets for 14-day RSI + Mean Reversion strategy
+# Optimized for daily data collection and trading strategy
+
+# ============================================================================
+# CORE MARKET ETFS (Essential for Strategy)
+# ============================================================================
+SPY     # S&P 500 ETF - Core market exposure
+QQQ     # NASDAQ-100 ETF - Tech-heavy exposure
+IWM     # Russell 2000 ETF - Small-cap exposure
+VTI     # Total Stock Market ETF - Broad diversification
+
+# ============================================================================
+# SECTOR ETFS (Sector Rotation & Diversification)
+# ============================================================================
+XLF     # Financial Select Sector SPDR
+XLK     # Technology Select Sector SPDR
+XLE     # Energy Select Sector SPDR
+XLV     # Health Care Select Sector SPDR
+XLI     # Industrial Select Sector SPDR
+XLB     # Materials Select Sector SPDR
+XLP     # Consumer Staples Select Sector SPDR
+XLY     # Consumer Discretionary Select Sector SPDR
+XLU     # Utilities Select Sector SPDR
+
+# ============================================================================
+# VOLATILITY & INVERSE ETFS (Mean Reversion Opportunities)
+# ============================================================================
+VXX     # VIX ETN - Volatility exposure
+UVXY    # ProShares Ultra VIX Short-Term Futures
+TVIX    # VelocityShares Daily 2x VIX Short-Term ETN
+SVXY    # ProShares Short VIX Short-Term Futures
+XIV     # VelocityShares Daily Inverse VIX Short-Term ETN
+
+# ============================================================================
+# TECH GIANTS (Top Market Cap - High Liquidity)
+# ============================================================================
+AAPL    # Apple Inc.
+MSFT    # Microsoft Corporation
+GOOGL   # Alphabet Inc. (Google)
+AMZN    # Amazon.com Inc.
+NVDA    # NVIDIA Corporation
+META    # Meta Platforms Inc.
+TSLA    # Tesla Inc.
+AVGO    # Broadcom Inc.
+PEP     # PepsiCo Inc.
+COST    # Costco Wholesale Corporation
+
+# ============================================================================
+# FINANCIAL LEADERS (Sector-Specific Opportunities)
+# ============================================================================
+BRK.B   # Berkshire Hathaway Inc.
+JPM     # JPMorgan Chase & Co.
+BAC     # Bank of America Corp.
+WFC     # Wells Fargo & Company
+GS      # Goldman Sachs Group Inc.
+MS      # Morgan Stanley
+SPGI    # S&P Global Inc.
+BLK     # BlackRock Inc.
+SCHW    # Charles Schwab Corporation
+USB     # U.S. Bancorp
+
+# ============================================================================
+# HEALTHCARE LEADERS (Defensive Sector)
+# ============================================================================
+UNH     # UnitedHealth Group Inc.
+JNJ     # Johnson & Johnson
+PFE     # Pfizer Inc.
+ABBV    # AbbVie Inc.
+TMO     # Thermo Fisher Scientific Inc.
+DHR     # Danaher Corporation
+LLY     # Eli Lilly and Company
+ABT     # Abbott Laboratories
+BMY     # Bristol-Myers Squibb
+GILD    # Gilead Sciences Inc.
+
+# ============================================================================
+# CONSUMER LEADERS (Stable Companies)
+# ============================================================================
+PG      # Procter & Gamble Co.
+KO      # Coca-Cola Company
+WMT     # Walmart Inc.
+HD      # Home Depot Inc.
+MCD     # McDonald's Corporation
+DIS     # Walt Disney Company
+NKE     # Nike Inc.
+SBUX    # Starbucks Corporation
+TGT     # Target Corporation
+LOW     # Lowe's Companies Inc.
+
+# ============================================================================
+# ENERGY & INDUSTRIAL (Cyclical Exposure)
+# ============================================================================
+XOM     # Exxon Mobil Corporation
+CVX     # Chevron Corporation
+V       # Visa Inc.
+MA      # Mastercard Inc.
+CMCSA   # Comcast Corporation
+CHTR    # Charter Communications Inc.
+NFLX    # Netflix Inc.
+CME     # CME Group Inc.
+ICE     # Intercontinental Exchange Inc.
+
+# ============================================================================
+# COMMODITY & BOND ETFS (Risk Management)
+# ============================================================================
+GLD     # SPDR Gold Shares
+SLV     # iShares Silver Trust
+USO     # United States Oil Fund LP
+TLT     # iShares 20+ Year Treasury Bond ETF
+IEF     # iShares 7-10 Year Treasury Bond ETF
+SHY     # iShares 1-3 Year Treasury Bond ETF
+
+# ============================================================================
+# INTERNATIONAL ETFS (Global Exposure)
+# ============================================================================
+EFA     # iShares MSCI EAFE ETF
+EEM     # iShares MSCI Emerging Markets ETF
+FXI     # iShares China Large-Cap ETF
+EWJ     # iShares MSCI Japan ETF
+EWG     # iShares MSCI Germany ETF
+EWU     # iShares MSCI United Kingdom ETF
+
+# ============================================================================
+# LEVERAGED ETFs (Enhanced Opportunities - Use with Caution)
+# ============================================================================
+TQQQ    # ProShares UltraPro QQQ (3x NASDAQ)
+SQQQ    # ProShares UltraPro Short QQQ (-3x NASDAQ)
+SPXL    # Direxion Daily S&P 500 Bull 3X Shares
+SPXS    # Direxion Daily S&P 500 Bear 3X Shares
+
+# ============================================================================
+# TOTAL ASSETS: 95 symbols
+# ============================================================================
+# This focused selection provides:
+# - High liquidity for reliable execution
+# - Diversification across sectors and asset classes
+# - Mean reversion opportunities in volatility ETFs
+# - Stable companies for defensive positioning
+# - Manageable data collection and analysis
+# - Optimal balance of risk and opportunity

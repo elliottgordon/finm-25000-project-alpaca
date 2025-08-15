@@ -1,0 +1,147 @@
+# INTRADAY TRADING WATCHLIST
+# Top 100 Market Cap US Equities + Key ETFs for Short-term RSI/Mean Reversion Strategy
+# Optimized for 3-5 day RSI periods and intraday mean reversion signals
+
+# ============================================================================
+# CORE MARKET ETFS (Essential for Strategy)
+# ============================================================================
+SPY     # S&P 500 ETF - Core market exposure
+QQQ     # NASDAQ-100 ETF - Tech-heavy exposure
+IWM     # Russell 2000 ETF - Small-cap exposure
+VTI     # Total Stock Market ETF - Broad diversification
+
+# ============================================================================
+# SECTOR ETFS (Sector Rotation & Diversification)
+# ============================================================================
+XLF     # Financial Select Sector SPDR
+XLK     # Technology Select Sector SPDR
+XLE     # Energy Select Sector SPDR
+XLV     # Health Care Select Sector SPDR
+XLI     # Industrial Select Sector SPDR
+XLB     # Materials Select Sector SPDR
+XLP     # Consumer Staples Select Sector SPDR
+XLY     # Consumer Discretionary Select Sector SPDR
+XLU     # Utilities Select Sector SPDR
+
+# ============================================================================
+# VOLATILITY & INVERSE ETFS (Mean Reversion Opportunities)
+# ============================================================================
+VXX     # VIX ETN - Volatility exposure
+UVXY    # ProShares Ultra VIX Short-Term Futures
+TVIX    # VelocityShares Daily 2x VIX Short-Term ETN
+SVXY    # ProShares Short VIX Short-Term Futures
+XIV     # VelocityShares Daily Inverse VIX Short-Term ETN
+
+# ============================================================================
+# TOP 100 MARKET CAP US EQUITIES (By Market Cap)
+# ============================================================================
+# Technology Giants
+AAPL    # Apple Inc.
+MSFT    # Microsoft Corporation
+GOOGL   # Alphabet Inc. (Google)
+AMZN    # Amazon.com Inc.
+NVDA    # NVIDIA Corporation
+META    # Meta Platforms Inc.
+TSLA    # Tesla Inc.
+AVGO    # Broadcom Inc.
+PEP     # PepsiCo Inc.
+COST    # Costco Wholesale Corporation
+
+# Financial & Banking
+BRK.B   # Berkshire Hathaway Inc.
+JPM     # JPMorgan Chase & Co.
+BAC     # Bank of America Corp.
+WFC     # Wells Fargo & Company
+GS      # Goldman Sachs Group Inc.
+MS      # Morgan Stanley
+SPGI    # S&P Global Inc.
+BLK     # BlackRock Inc.
+SCHW    # Charles Schwab Corporation
+USB     # U.S. Bancorp
+
+# Healthcare & Pharma
+UNH     # UnitedHealth Group Inc.
+JNJ     # Johnson & Johnson
+PFE     # Pfizer Inc.
+ABBV    # AbbVie Inc.
+TMO     # Thermo Fisher Scientific Inc.
+DHR     # Danaher Corporation
+LLY     # Eli Lilly and Company
+ABT     # Abbott Laboratories
+BMY     # Bristol-Myers Squibb
+GILD    # Gilead Sciences Inc.
+
+# Consumer & Retail
+PG      # Procter & Gamble Co.
+KO      # Coca-Cola Company
+WMT     # Walmart Inc.
+HD      # Home Depot Inc.
+MCD     # McDonald's Corporation
+DIS     # Walt Disney Company
+NKE     # Nike Inc.
+SBUX    # Starbucks Corporation
+TGT     # Target Corporation
+LOW     # Lowe's Companies Inc.
+
+# Energy & Industrial
+XOM     # Exxon Mobil Corporation
+CVX     # Chevron Corporation
+JNJ     # Johnson & Johnson
+JPM     # JPMorgan Chase & Co.
+V       # Visa Inc.
+MA      # Mastercard Inc.
+HD      # Home Depot Inc.
+BAC     # Bank of America Corp.
+PFE     # Pfizer Inc.
+ABBV    # AbbVie Inc.
+
+# Communication & Media
+CMCSA   # Comcast Corporation
+CHTR    # Charter Communications Inc.
+NFLX    # Netflix Inc.
+CME     # CME Group Inc.
+ICE     # Intercontinental Exchange Inc.
+FOX     # Fox Corporation
+FOXA    # Fox Corporation Class A
+NWSA    # News Corporation
+NWS     # News Corporation Class B
+
+# ============================================================================
+# COMMODITY & BOND ETFS (Risk Management)
+# ============================================================================
+GLD     # SPDR Gold Shares
+SLV     # iShares Silver Trust
+USO     # United States Oil Fund LP
+TLT     # iShares 20+ Year Treasury Bond ETF
+IEF     # iShares 7-10 Year Treasury Bond ETF
+SHY     # iShares 1-3 Year Treasury Bond ETF
+
+# ============================================================================
+# INTERNATIONAL ETFS (Global Exposure)
+# ============================================================================
+EFA     # iShares MSCI EAFE ETF
+EEM     # iShares MSCI Emerging Markets ETF
+FXI     # iShares China Large-Cap ETF
+EWJ     # iShares MSCI Japan ETF
+EWG     # iShares MSCI Germany ETF
+EWU     # iShares MSCI United Kingdom ETF
+
+# ============================================================================
+# LEVERAGED ETFs (Enhanced Opportunities)
+# ============================================================================
+TQQQ    # ProShares UltraPro QQQ (3x NASDAQ)
+SQQQ    # ProShares UltraPro Short QQQ (-3x NASDAQ)
+SPXL    # Direxion Daily S&P 500 Bull 3X Shares
+SPXS    # Direxion Daily S&P 500 Bear 3X Shares
+UVXY    # ProShares Ultra VIX Short-Term Futures (2x VIX)
+SVXY    # ProShares Short VIX Short-Term Futures (-1x VIX)
+
+# ============================================================================
+# TOTAL ASSETS: ~120 symbols
+# ============================================================================
+# This focused selection provides:
+# - High liquidity for intraday trading
+# - Diversification across sectors
+# - Volatility opportunities for mean reversion
+# - Leveraged options for enhanced returns
+# - Manageable data collection and analysis

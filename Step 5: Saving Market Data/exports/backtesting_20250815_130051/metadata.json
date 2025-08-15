@@ -1,0 +1,13 @@
+{
+  "export_date": "2025-08-15T13:00:51.623854",
+  "symbols": [
+    "AAPL",
+    "ABBV"
+  ],
+  "date_range": {
+    "start": "2025-08-01",
+    "end": "2025-08-14 04:00:00.000000"
+  },
+  "total_records": 20,
+  "format": "OHLCV for backtesting"
+}
