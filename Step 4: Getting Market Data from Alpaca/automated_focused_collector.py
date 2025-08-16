@@ -20,6 +20,7 @@ from typing import List, Dict, Optional, Tuple
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import argparse
 
 # Add current directory to path for imports
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,8 +35,12 @@ def setup_logging(log_level: str = 'INFO', log_file: str = 'automated_collection
     """Setup comprehensive logging for production use"""
     log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     
+    # Use absolute path for log file to ensure it's created in the script's directory
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    log_file_path = os.path.join(script_dir, log_file)
+    
     # File handler with rotation
-    file_handler = logging.FileHandler(log_file)
+    file_handler = logging.FileHandler(log_file_path)
     file_handler.setLevel(getattr(logging, log_level))
     file_handler.setFormatter(logging.Formatter(log_format))
     
@@ -257,7 +262,7 @@ class AutomatedFocusedCollector:
             'last_collection_status': None
         }
     
-    def collect_daily_data(self, symbol: str, years_back: int = None) -> Tuple[bool, int]:
+    def collect_daily_data(self, symbol: str, years_back: int = None, is_full_refresh: bool = False) -> Tuple[bool, int]:
         """Collect daily data for a single symbol with enhanced error handling"""
         if years_back is None:
             years_back = self.config['collection']['years_back']
@@ -290,6 +295,12 @@ class AutomatedFocusedCollector:
                 
                 # Save to database
                 conn = sqlite3.connect(self.db_path)
+                
+                # **FIX**: If this is a full refresh, delete existing data first
+                if is_full_refresh:
+                    self.logger.info(f"Performing full refresh for {symbol}, deleting old records.")
+                    cursor = conn.cursor()
+                    cursor.execute("DELETE FROM market_data WHERE symbol = ?", (symbol,))
                 
                 # Use INSERT OR IGNORE to handle duplicates
                 data.to_sql('market_data', conn, if_exists='append', index=False)
@@ -333,7 +344,8 @@ class AutomatedFocusedCollector:
             self.logger.info(f"Processing batch {batch_num}/{total_batches}: {batch}")
             
             for symbol in batch:
-                success, records = self.collect_daily_data(symbol, years_back)
+                # Pass is_full_refresh=True to signal a delete-first operation
+                success, records = self.collect_daily_data(symbol, years_back, is_full_refresh=True)
                 results[symbol] = success
                 if success:
                     total_records += records
@@ -453,10 +465,10 @@ class AutomatedFocusedCollector:
             cutoff_date = (datetime.now() - timedelta(days=self.config['data_quality']['max_data_age_days'])).date()
             
             query = """
-                SELECT DISTINCT symbol 
+                SELECT symbol 
                 FROM market_data 
-                WHERE DATE(MAX(timestamp)) < ?
                 GROUP BY symbol
+                HAVING DATE(MAX(timestamp)) < ?
             """
             
             results = conn.execute(query, (cutoff_date.isoformat(),)).fetchall()
@@ -588,45 +600,118 @@ class AutomatedFocusedCollector:
         if self.is_running:
             self.logger.warning("Scheduler already running")
             return
-        
-        # Daily incremental updates
-        schedule.every().day.at(self.config['scheduling']['daily_update_time']).do(self.incremental_update)
-        
-        # Weekly full collection
-        schedule.every().sunday.at(self.config['scheduling']['weekly_full_collection']).do(self.collect_all_focused_data)
-        
-        # Data quality checks
-        schedule.every().day.at("09:00").do(self.check_data_quality)
-        
+
+        flag_file = os.path.join(os.path.dirname(__file__), '..', 'Step 7: Trading Strategy', 'live_trading.flag')
+
+        if os.path.exists(flag_file):
+            # Live trading mode
+            self.logger.info("Live trading flag detected. Running in live update mode.")
+            schedule.every(1).minutes.do(self.incremental_update)
+        else:
+            # Maintenance mode
+            self.logger.info("Running in maintenance mode.")
+            # Daily incremental updates
+            schedule.every().day.at(self.config['scheduling']['daily_update_time']).do(self.incremental_update)
+            # Weekly full collection
+            weekly_schedule_str = self.config['scheduling']['weekly_full_collection']
+            weekly_schedule_parts = weekly_schedule_str.split()
+            day_of_week = weekly_schedule_parts[0].lower()
+            time_of_day = weekly_schedule_parts[1]
+            
+            getattr(schedule.every(), day_of_week).at(time_of_day).do(self.collect_all_focused_data)
+            # Data quality checks
+            schedule.every().day.at("09:00").do(self.check_data_quality)
+
         self.logger.info("Scheduling setup complete")
-        self.logger.info(f"Daily updates: {self.config['scheduling']['daily_update_time']}")
-        self.logger.info(f"Weekly full collection: {self.config['scheduling']['weekly_full_collection']}")
     
     def start_scheduler(self):
-        """Start the automated scheduler"""
+        """Start the automated scheduler (with PID file for cross-process control)"""
         if self.is_running:
             self.logger.warning("Scheduler already running")
             return
-        
+
+        # PID file location (in Step 4 for clarity)
+        self.pid_file = os.path.join(os.path.dirname(__file__), 'scheduler.pid')
+        if os.path.exists(self.pid_file):
+            self.logger.warning(f"PID file {self.pid_file} already exists. Scheduler may already be running.")
+            return
+
+        # Write PID file
+        with open(self.pid_file, 'w') as f:
+            f.write(str(os.getpid()))
+
         self.setup_scheduling()
         self.is_running = True
-        
+
         def run_scheduler():
-            while self.is_running:
-                schedule.run_pending()
-                time.sleep(self.config['scheduling']['check_interval_minutes'] * 60)
-        
-        self.scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
+            import traceback
+            try:
+                # Use shorter interval for live trading mode
+                check_interval = 1 if os.path.exists(os.path.join(os.path.dirname(__file__), '..', 'Step 7: Trading Strategy', 'live_trading.flag')) else self.config['scheduling']['check_interval_minutes']
+                
+                while self.is_running:
+                    schedule.run_pending()
+                    time.sleep(check_interval * 60)
+
+            except Exception as e:
+                self.logger.error(f"Exception in scheduler thread: {e}\n{traceback.format_exc()}")
+            finally:
+                # Cleanup PID file on exit
+                if os.path.exists(self.pid_file):
+                    os.remove(self.pid_file)
+                self.logger.info("Scheduler thread exiting and PID file removed.")
+
+        self.scheduler_thread = threading.Thread(target=run_scheduler, daemon=False)
         self.scheduler_thread.start()
-        
-        self.logger.info("Automated scheduler started")
-    
+
+        self.logger.info(f"Automated scheduler started (PID: {os.getpid()})")
+
     def stop_scheduler(self):
-        """Stop the automated scheduler"""
-        self.is_running = False
-        if self.scheduler_thread:
-            self.scheduler_thread.join(timeout=5)
-        self.logger.info("Automated scheduler stopped")
+        """Stop the automated scheduler (cross-process via PID file and SIGTERM, with stale PID cleanup)"""
+        self.pid_file = os.path.join(os.path.dirname(__file__), 'scheduler.pid')
+        if os.path.exists(self.pid_file):
+            try:
+                with open(self.pid_file, 'r') as f:
+                    pid = int(f.read().strip())
+                import signal
+                import errno
+                if pid == os.getpid():
+                    # Stopping from within the same process
+                    self.is_running = False
+                    if self.scheduler_thread:
+                        self.scheduler_thread.join(timeout=5)
+                    if os.path.exists(self.pid_file):
+                        os.remove(self.pid_file)
+                    self.logger.info("Automated scheduler stopped (self-stopped, PID file removed)")
+                else:
+                    # Check if process is running
+                    try:
+                        os.kill(pid, 0)
+                    except OSError as e:
+                        if e.errno == errno.ESRCH:
+                            # No such process, remove stale PID file
+                            os.remove(self.pid_file)
+                            self.logger.warning(f"Stale PID file found for non-existent process {pid}. PID file removed.")
+                            return
+                        else:
+                            self.logger.error(f"Error checking PID {pid}: {e}")
+                            return
+                    # Stopping from another process: send SIGTERM
+                    os.kill(pid, signal.SIGTERM)
+                    self.logger.info(f"Sent SIGTERM to scheduler process (PID: {pid})")
+                    # Wait for process to clean up PID file
+                    for _ in range(10):
+                        if not os.path.exists(self.pid_file):
+                            break
+                        time.sleep(0.5)
+                    if not os.path.exists(self.pid_file):
+                        self.logger.info("Scheduler stopped and PID file removed.")
+                    else:
+                        self.logger.warning("Scheduler process did not remove PID file. Manual cleanup may be needed.")
+            except Exception as e:
+                self.logger.error(f"Error stopping scheduler: {e}")
+        else:
+            self.logger.info("No scheduler PID file found. Scheduler may not be running.")
     
     def send_email_alert(self, subject: str, message: str):
         """Send email alert if configured"""
@@ -660,7 +745,7 @@ class AutomatedFocusedCollector:
                 SELECT * FROM collection_log 
                 WHERE DATE(created_at) >= DATE('now', '-{} days')
                 ORDER BY created_at DESC
-            ""..
+            """.format(days_back)
             
             results = pd.read_sql_query(query, conn)
             conn.close()
@@ -716,6 +801,66 @@ class AutomatedFocusedCollector:
 
 def main():
     """Main function for automated focused data collection"""
+    parser = argparse.ArgumentParser(description="Automated Focused Data Collector")
+    parser.add_argument("--action", type=str, help="Action to perform: collect_full, incremental_update, check_quality, start_scheduler, stop_scheduler, view_history, view_status")
+    args = parser.parse_args()
+
+    collector = AutomatedFocusedCollector()
+
+    if args.action:
+        if args.action == 'collect_full':
+            print(f"\n📥 Collecting full daily data (7+ years)...")
+            results = collector.collect_all_focused_data()
+            print(f"✅ Collection complete: {results['successful_symbols']}/{results['total_symbols']} symbols successful")
+            print(f"   Total records: {results['total_records']:,}")
+            print(f"   Duration: {results['duration_minutes']:.1f} minutes")
+        elif args.action == 'incremental_update':
+            print(f"\n🔄 Performing incremental update...")
+            results = collector.incremental_update()
+            print(f"✅ Update complete: {results['status']}")
+            if 'symbols_updated' in results:
+                print(f"   Symbols updated: {results['symbols_updated']}")
+        elif args.action == 'check_quality':
+            print(f"\n🔍 Checking data quality...")
+            quality = collector.check_data_quality()
+            if 'error' not in quality:
+                print(f"✅ Quality check complete:")
+                for status, count in quality['status_counts'].items():
+                    print(f"   {status}: {count} symbols")
+            else:
+                print(f"❌ Error: {quality['error']}")
+        elif args.action == 'start_scheduler':
+            print(f"\n🚀 Starting automated scheduler...")
+            collector.start_scheduler()
+            print(f"✅ Scheduler started successfully")
+        elif args.action == 'stop_scheduler':
+            print(f"\n⏹️  Stopping automated scheduler...")
+            collector.stop_scheduler()
+            print(f"✅ Scheduler stopped successfully")
+        elif args.action == 'view_history':
+            print(f"\n📚 Collection history (last 30 days):")
+            history = collector.get_collection_history()
+            if history:
+                for entry in history[:5]:  # Show last 5 entries
+                    print(f"   {entry['collection_date']}: {entry['symbols_successful']}/{entry['symbols_processed']} successful")
+            else:
+                print("   No collection history found")
+        elif args.action == 'view_status':
+            print(f"\n📊 System status:")
+            status = collector.get_system_status()
+            if 'error' not in status:
+                print(f"   Database: {status['database']['total_symbols']} symbols")
+                print(f"   Total Records: {status['database']['total_records']:,}")
+                print(f"   DB Size: {status['database']['db_size_mb']:.1f} MB")
+                print(f"   Scheduler: {'Running' if status['scheduler']['is_running'] else 'Stopped'}")
+                print(f"   Latest Collection: {status['latest_collection']['status']}")
+                print(f"   Data Quality: {status['data_quality']}")
+            else:
+                print(f"❌ Error: {status['error']}")
+        else:
+            print(f"❌ Invalid action: {args.action}")
+        return
+
     print("🚀 AUTOMATED FOCUSED DATA COLLECTOR")
     print("=" * 70)
     print("Production-ready data collection with automation, scheduling, and monitoring")

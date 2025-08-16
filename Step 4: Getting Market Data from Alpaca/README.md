@@ -31,6 +31,9 @@ Clean, focused scripts for automated daily data collection with comprehensive mo
 - **Quality Monitoring**: Continuous data validation and alerting
 
 ### **Scheduling & Automation**
+- **Dual-Mode Operation**: Automatic switching between maintenance and live trading modes
+- **Live Trading Mode**: 1-minute incremental updates when live trading is active
+- **Maintenance Mode**: Standard daily/weekly schedule when live trading is inactive
 - **Systemd Service**: Professional service management with auto-restart
 - **Cron Integration**: Traditional scheduling support
 - **Docker Support**: Containerized deployment options
@@ -99,16 +102,34 @@ crontab -e
 # Add: 30 16 * * 1-5 cd /path/to/Step4 && python automated_focused_collector.py --incremental
 ```
 
+### **4. Test Dual-Mode Functionality**
+```bash
+# Test Maintenance Mode (Default)
+python automated_focused_collector.py --action start_scheduler
+
+# Test Live Trading Mode
+# In another terminal, start live trader to create flag file
+python "../Step 7: Trading Strategy/live_trader.py" &
+# Then start collector - it will automatically detect live trading mode
+python automated_focused_collector.py --action start_scheduler
+```
+
 ## 📈 Data Collection Schedule
 
-### **Daily Operations** (Weekdays)
-- **16:30 (4:30 PM)**: Incremental updates for outdated symbols
-- **09:00 (9:00 AM)**: Data quality validation and monitoring
+### **Maintenance Mode** (Default - No Live Trading)
+- **Daily Operations** (Weekdays)
+  - **16:30 (4:30 PM)**: Incremental updates for outdated symbols
+  - **09:00 (9:00 AM)**: Data quality validation and monitoring
+- **Weekly Operations** (Sunday)
+  - **18:00 (6:00 PM)**: Full data collection for all symbols
+  - **Data validation** and quality assessment
+  - **Performance reporting** and alerting
 
-### **Weekly Operations** (Sunday)
-- **18:00 (6:00 PM)**: Full data collection for all symbols
-- **Data validation** and quality assessment
-- **Performance reporting** and alerting
+### **Live Trading Mode** (When Live Trading is Active)
+- **Real-Time Updates**: Incremental updates every minute
+- **Automatic Detection**: Detects `live_trading.flag` file presence
+- **Dynamic Scheduling**: Switches from 15-minute to 1-minute intervals
+- **Seamless Transition**: Automatic mode switching without restart
 
 ## 🔍 Monitoring & Maintenance
 
@@ -118,11 +139,17 @@ crontab -e
 tail -f automated_collection.log
 
 # Check system status
-python automated_focused_collector.py --status
+python automated_focused_collector.py --action view_status
 
 # Monitor data quality
-python automated_focused_collector.py --quality
+python automated_focused_collector.py --action check_quality
 ```
+
+### **Logging System**
+- **Dual Output**: All activities logged to both console and file
+- **Absolute Paths**: Reliable file logging regardless of execution directory
+- **Comprehensive Coverage**: Collection, scheduling, and error logging
+- **Real-Time Updates**: Live log monitoring for production use
 
 ### **Database Health**
 ```bash

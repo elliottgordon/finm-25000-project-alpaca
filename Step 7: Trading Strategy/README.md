@@ -60,6 +60,7 @@ This folder contains a comprehensive, professional implementation of all Step 7 
 - **`strategy_analyzer.py`** - Comprehensive analysis and visualization tools
 - **`advanced_strategy_analyzer.py`** - Multi-asset and advanced analytics
 - **`demo.py`** - Complete demonstration of all Step 7 capabilities
+- **`live_trader.py`** - Live trading bot with automatic flag file management
 
 ### Data Analysis Components (Enhanced from Step 5)
 - **`data_analyzer.py`** - Technical analysis and visualization tools
@@ -99,6 +100,19 @@ from strategy_analyzer import StrategyAnalyzer
 analyzer = StrategyAnalyzer()
 analyzer.run_portfolio_analysis()
 "
+```
+
+### 4. Test Live Trading Integration
+```bash
+# Test dual-mode data collection
+# Terminal 1: Start live trader (creates flag file)
+python live_trader.py &
+
+# Terminal 2: Start data collector (detects live trading mode)
+python "../Step 4: Getting Market Data from Alpaca/automated_focused_collector.py" --action start_scheduler
+
+# Verify live trading mode is active
+tail -f "../Step 4: Getting Market Data from Alpaca/automated_collection.log"
 ```
 
 ## 📊 Strategy Performance
@@ -167,6 +181,21 @@ risk_parameters = {
 ### Entry Signals
 - **BUY**: RSI < 30 (oversold) AND Z-score < -2σ (below mean)
 - **SELL**: RSI > 70 (overbought) AND Z-score > +2σ (above mean)
+
+## 🔄 Live Trading Integration
+
+### Dual-Mode Data Collection
+- **Automatic Mode Detection**: Creates `live_trading.flag` file when active
+- **Real-Time Updates**: Triggers 1-minute incremental data updates in Step 4
+- **Seamless Integration**: Automatic switching between maintenance and live trading modes
+- **Flag File Management**: Automatic creation and cleanup of trading status flags
+
+### Live Trading Workflow
+1. **Start Live Trader**: `python live_trader.py` creates flag file
+2. **Data Collection**: Step 4 collector automatically switches to live mode
+3. **Real-Time Updates**: 1-minute incremental data collection
+4. **Trading Execution**: Live signal generation and order placement
+5. **Cleanup**: Flag file automatically removed on termination
 
 ### Signal Quality Filters
 - **Volume Validation**: Minimum 80% of 20-day average volume
